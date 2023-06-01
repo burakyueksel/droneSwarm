@@ -17,7 +17,7 @@ namespace Parameters {
 
         // Drone 2 parameters
         DroneParameters drone2Params;
-        drone1Params.mass = 1.5; // Set the mass for drone 2
+        drone2Params.mass = 1.5; // Set the mass for drone 2
         drone2Params.inertiaMatrix << 4.0, 0.0, 0.0,
                                       0.0, 5.0, 0.0,
                                       0.0, 0.0, 6.0;
@@ -25,7 +25,7 @@ namespace Parameters {
 
         // Drone 3 parameters
         DroneParameters drone3Params;
-        drone1Params.mass = 2.0; // Set the mass for drone 3
+        drone3Params.mass = 2.0; // Set the mass for drone 3
         drone3Params.inertiaMatrix << 7.0, 0.0, 0.0,
                                       0.0, 8.0, 0.0,
                                       0.0, 0.0, 9.0;
@@ -33,7 +33,7 @@ namespace Parameters {
 
         // Drone 4 parameters
         DroneParameters drone4Params;
-        drone1Params.mass = 2.5; // Set the mass for drone 4
+        drone4Params.mass = 2.5; // Set the mass for drone 4
         drone4Params.inertiaMatrix << 10.0, 0.0, 0.0,
                                       0.0, 11.0, 0.0,
                                       0.0, 0.0, 12.0;

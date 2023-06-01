@@ -18,7 +18,7 @@ int main()
     }
 
     double timeStep = 0.001;
-    double timeEnd  = 0.003;
+    double timeEnd  = 1;
     int numSteps = timeEnd/timeStep;
 
     for (int step = 0; step < numSteps; ++step)
