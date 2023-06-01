@@ -2,24 +2,32 @@
 
 Drone::Drone()
 {
-    // Implement the constructor if needed
+    // Initialize the member variables
+    position.setZero();
+    velocity.setZero();
+    angularVelocity.setZero();
+    orientation.setIdentity();
 }
 
-void Drone::updateState(double timeStep)
-{
-    // Implement the update of the drone's state based on dynamics
-    // This could include updating the position, velocity, and orientation using appropriate formulas
-    // Update the state variables based on the provided time step
-    // Add any additional logic required for the dynamics
-    // For example:
-    // position += velocity * timeStep;
-    // velocity += acceleration * timeStep;
-    // orientation += angularVelocity * timeStep;
-    // Implement the necessary logic for translational and rotational dynamics
-    // You can access and modify the private member variables of the Drone class here
-    // Add any other necessary logic for the update
-    // Remember to account for forces, torques, and other physical factors affecting the drone's motion
-    // This is a simplified example; you may need to incorporate more complex dynamics and control algorithms
-    // based on your specific requirements and desired level of accuracy
-    // You can also include other member functions in the Drone class as per your needs
+
+void Drone::updateState(double timeStep) {
+    // Update the drone's state based on dynamics
+
+    // Update translational dynamics (position, velocity, etc.) as per your requirements
+
+    // Update rotational dynamics using quaternions
+    Eigen::Matrix3d inertiaMatrix; // Define the inertia matrix
+
+    // Calculate the torque acting on the drone
+    Eigen::Vector3d externalTorque; // Define the external torque vector
+
+    // Calculate the angular acceleration based on the second-order quaternion dynamics equation
+    Eigen::Vector3d angularAcceleration; // here compute the angular acceleration
+
+    // Integrate the angular acceleration to update the angular velocity
+    angularVelocity += angularAcceleration * timeStep;
+
+    // Compute q_dot from q and angular velocity. Then integrate q_dot to q.
+
+    // Update other state variables (position, velocity, etc.) as needed
 }
