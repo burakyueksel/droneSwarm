@@ -12,9 +12,16 @@ Drone::Drone(int id)
     this->id = id;
 
     // Initialize the parameters based on the ID
-    if (id >= 0 && id < Parameters::droneParams.size()) {
+    if (id >= 0 && id < Parameters::droneParams.size())
+    {
         parameters = Parameters::droneParams[id];
-    } else {
+        // Print the parameters used for this drone
+        std::cout << "Drone ID: " << id << std::endl;
+        std::cout << "Mass: " << parameters.mass << std::endl;
+        std::cout << "Inertia Matrix:\n" << parameters.inertiaMatrix << std::endl;
+    }
+    else
+    {
         // Handle the case when the ID is out of range
         std::cout << "Error: Invalid drone ID!" << std::endl;
         // You may choose to assign default parameters or handle the error in another way
@@ -34,8 +41,8 @@ void Drone::updateState(double timeStep) {
 
     // Update translational dynamics:
     // Compute translational acceleration
-    // Compute gravity force
-    Eigen::Vector3d gravityForce(0.0, 0.0, -9.81 * parameters.mass);
+    // Compute gravity force (NED reference frame)
+    Eigen::Vector3d gravityForce(0.0, 0.0, 9.81 * parameters.mass);
 
     // Compute net force
     Eigen::Vector3d netForce = externalForce + gravityForce;
@@ -51,14 +58,9 @@ void Drone::updateState(double timeStep) {
     Eigen::Vector3d angularMomentum = angularVelocity.cross(parameters.inertiaMatrix * angularVelocity);
     // Calculate the angular acceleration
     Eigen::Vector3d angularAcceleration  = parameters.inertiaMatrix.inverse() * (externalTorque-angularMomentum);
-
+    // TODO: here comes the quaternion kinematics
     // Integrate the angular acceleration to update the angular velocity
     angularVelocity += angularAcceleration * timeStep;
-
-    // Compute q_dot from q and angular velocity. Then integrate q_dot to q.
-
-    // Update other state variables (position, velocity, etc.) as needed
-
 }
 
 // external torques: control torques, disturbance torques, etc
@@ -77,4 +79,8 @@ int Drone::getID() const {
 
 Eigen::Vector3d Drone::getPosition() const {
     return position;
+}
+
+Eigen::Vector3d Drone::getVelocity() const {
+    return velocity;
 }

@@ -18,6 +18,7 @@ public:
     void setExternalTorque(const Eigen::Vector3d& torque); // Set the value of externalTorque
     int getID() const;
     Eigen::Vector3d getPosition() const;
+    Eigen::Vector3d getVelocity() const;
 
     // Add more member functions as needed
 

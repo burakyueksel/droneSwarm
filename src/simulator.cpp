@@ -7,16 +7,18 @@
 #include "parameters.h"
 #include <iostream>
 
-int main() {
+int main()
+{
     Parameters::loadParameters();
 
     std::vector<Drone> drones;
-    for (int i = 0; i < Parameters::droneParams.size(); ++i) {
+    for (int i = 0; i < Parameters::droneParams.size(); ++i)
+    {
         drones.emplace_back(i);
     }
 
     double timeStep = 0.001;
-    double timeEnd  = 10;
+    double timeEnd  = 0.003;
     int numSteps = timeEnd/timeStep;
 
     for (int step = 0; step < numSteps; ++step)
