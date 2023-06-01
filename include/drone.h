@@ -12,20 +12,24 @@
 class Drone
 {
 public:
-    Drone(int droneId); // Constructor with drone ID
+    Drone(int id); // Constructor with drone ID
     void updateState(double timeStep); // Update the drone's state based on dynamics
+    void setExternalForce(const Eigen::Vector3d& force); // Set the value of externalForce
     void setExternalTorque(const Eigen::Vector3d& torque); // Set the value of externalTorque
+    int getID() const;
+    Eigen::Vector3d getPosition() const;
+
     // Add more member functions as needed
 
 private:
-    // Define the drone's state variables (position, velocity, orientation as quaternions, etc.)
-    // For example:
+    int id;
+    DroneParameters parameters;
     Eigen::Vector3d position;
     Eigen::Vector3d velocity;
     Eigen::Vector3d angularVelocity; // Angular velocity as a member variable
     Eigen::Quaterniond orientation; // Orientation as a member variable
     Eigen::Vector3d externalTorque; // External torque as a member variable
-    Eigen::Matrix3d inertiaMatrix; // Inertia matrix as a member variable
+    Eigen::Vector3d externalForce; // External force as a member variable
     // Add other relevant private member variables
 
     // Define other relevant private member variables

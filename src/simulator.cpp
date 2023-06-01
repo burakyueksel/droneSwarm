@@ -5,6 +5,7 @@
  */
 #include "drone.h"
 #include "parameters.h"
+#include <iostream>
 
 int main() {
     Parameters::loadParameters();
@@ -14,18 +15,31 @@ int main() {
         drones.emplace_back(i);
     }
 
-    double timeStep = 0.01;
-    int numSteps = 1000;
+    double timeStep = 0.001;
+    double timeEnd  = 10;
+    int numSteps = timeEnd/timeStep;
 
-    for (int step = 0; step < numSteps; ++step) {
-        for (auto& drone : drones) {
+    for (int step = 0; step < numSteps; ++step)
+    {
+        double currentTime = step * timeStep;
+        std::cout << "Simulation Time: " << currentTime << " seconds" << std::endl;
+        std::cout << "Number of Drones: " << drones.size() << std::endl;
+        for (auto& drone : drones)
+        {
             drone.updateState(timeStep);
+            // Print the position of each drone
+            std::cout << "Drone " << drone.getID() << " position: "
+                      << drone.getPosition().x() << ", "
+                      << drone.getPosition().y() << ", "
+                      << drone.getPosition().z() << std::endl;
         }
 
         // Perform other simulation tasks
 
-        for (auto& drone : drones) {
+        for (auto& drone : drones)
+        {
             drone.setExternalTorque(Eigen::Vector3d(0.0, 0.0, 0.0));
+            drone.setExternalForce(Eigen::Vector3d(0.0, 0.0, 0.0));
         }
 
         // Perform other simulation tasks

@@ -8,7 +8,9 @@
 #include <eigen3/Eigen/Dense> // Include Eigen library for vector and matrix operations
 #include <vector>
 
-struct DroneParameters {
+struct DroneParameters
+{
+    double mass;
     Eigen::Matrix3d inertiaMatrix;
 };
 

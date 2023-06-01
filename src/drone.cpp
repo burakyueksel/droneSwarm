@@ -6,26 +6,51 @@
 #include "drone.h"
 #include <iostream>
 
-Drone::Drone(int droneId) {
+Drone::Drone(int id)
+{
+    // Set the drone ID
+    this->id = id;
+
+    // Initialize the parameters based on the ID
+    if (id >= 0 && id < Parameters::droneParams.size()) {
+        parameters = Parameters::droneParams[id];
+    } else {
+        // Handle the case when the ID is out of range
+        std::cout << "Error: Invalid drone ID!" << std::endl;
+        // You may choose to assign default parameters or handle the error in another way
+    }
     // Initialize the member variables
+    velocity.setZero();
+    position.setZero();
+    externalForce.setZero();
     angularVelocity.setZero();
     orientation.setIdentity();
     externalTorque.setZero();
-
-    // Set the inertia matrix based on the drone ID
 }
 
 
 void Drone::updateState(double timeStep) {
     // Update the drone's state based on dynamics
 
-    // Update translational dynamics (position, velocity, etc.) as per your requirements
+    // Update translational dynamics:
+    // Compute translational acceleration
+    // Compute gravity force
+    Eigen::Vector3d gravityForce(0.0, 0.0, -9.81 * parameters.mass);
 
-    // Update rotational dynamics using quaternions
-    Eigen::Matrix3d inertiaMatrix; // Define the inertia matrix
+    // Compute net force
+    Eigen::Vector3d netForce = externalForce + gravityForce;
 
-    // Calculate the angular acceleration based on the second-order quaternion dynamics equation
-    Eigen::Vector3d angularAcceleration; // here compute the angular acceleration
+    // Compute acceleration
+    Eigen::Vector3d acceleration = netForce / parameters.mass;
+    // Update velocity and position
+    position = position + velocity * timeStep + 0.5 * acceleration * pow(timeStep,2) ;
+    velocity += acceleration * timeStep;
+
+    // Update rotational dynamics:
+    // Compute angular momentum
+    Eigen::Vector3d angularMomentum = angularVelocity.cross(parameters.inertiaMatrix * angularVelocity);
+    // Calculate the angular acceleration
+    Eigen::Vector3d angularAcceleration  = parameters.inertiaMatrix.inverse() * (externalTorque-angularMomentum);
 
     // Integrate the angular acceleration to update the angular velocity
     angularVelocity += angularAcceleration * timeStep;
@@ -36,7 +61,20 @@ void Drone::updateState(double timeStep) {
 
 }
 
-
+// external torques: control torques, disturbance torques, etc
 void Drone::setExternalTorque(const Eigen::Vector3d& torque) {
     externalTorque = torque;
+}
+
+// external forces: control forces, disturbance forces, etc
+void Drone::setExternalForce(const Eigen::Vector3d& force) {
+    externalForce = force;
+}
+
+int Drone::getID() const {
+    return id;
+}
+
+Eigen::Vector3d Drone::getPosition() const {
+    return position;
 }
