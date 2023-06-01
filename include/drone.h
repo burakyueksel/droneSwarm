@@ -7,11 +7,12 @@
 #pragma once
 
 #include <eigen3/Eigen/Dense> // Include Eigen library for vector and matrix operations
+#include "parameters.h"
 
 class Drone
 {
 public:
-    Drone(); // Constructor
+    Drone(int droneId); // Constructor with drone ID
     void updateState(double timeStep); // Update the drone's state based on dynamics
     void setExternalTorque(const Eigen::Vector3d& torque); // Set the value of externalTorque
     // Add more member functions as needed
@@ -24,6 +25,7 @@ private:
     Eigen::Vector3d angularVelocity; // Angular velocity as a member variable
     Eigen::Quaterniond orientation; // Orientation as a member variable
     Eigen::Vector3d externalTorque; // External torque as a member variable
+    Eigen::Matrix3d inertiaMatrix; // Inertia matrix as a member variable
     // Add other relevant private member variables
 
     // Define other relevant private member variables

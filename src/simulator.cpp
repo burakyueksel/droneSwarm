@@ -3,28 +3,33 @@
  * Author: Burak Yueksel
  * Date: 2023-06-01
  */
-#include "simulator.h"
+#include "drone.h"
+#include "parameters.h"
 
-Simulator::Simulator(int numDrones) 
-{
-    // Initialize the required number of drones and add them to the 'drones' vector
-    for (int i = 0; i < numDrones; ++i) {
-        Drone drone;
-        drones.push_back(drone);
+int main() {
+    Parameters::loadParameters();
+
+    std::vector<Drone> drones;
+    for (int i = 0; i < Parameters::droneParams.size(); ++i) {
+        drones.emplace_back(i);
     }
-}
 
-void Simulator::runSimulation(double simulationTime, double timeStep) {
-    // Run the drone swarm simulation for the specified duration and time step
-    int numSteps = simulationTime / timeStep;
+    double timeStep = 0.01;
+    int numSteps = 1000;
+
     for (int step = 0; step < numSteps; ++step) {
-        // Update the state of each drone in the swarm
-        for (Drone& drone : drones) {
+        for (auto& drone : drones) {
             drone.updateState(timeStep);
         }
-        // Perform any other necessary simulation logic
-        // This could include collision detection, sensor updates, control algorithm execution, etc.
+
+        // Perform other simulation tasks
+
+        for (auto& drone : drones) {
+            drone.setExternalTorque(Eigen::Vector3d(0.0, 0.0, 0.0));
+        }
+
+        // Perform other simulation tasks
     }
-    // Add any post-simulation processing or analysis if required
-    // For example, outputting results or generating reports
+
+    return 0;
 }

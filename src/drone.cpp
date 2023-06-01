@@ -4,15 +4,15 @@
  * Date: 2023-06-01
  */
 #include "drone.h"
+#include <iostream>
 
-Drone::Drone()
-{
+Drone::Drone(int droneId) {
     // Initialize the member variables
-    position.setZero();
-    velocity.setZero();
     angularVelocity.setZero();
     orientation.setIdentity();
     externalTorque.setZero();
+
+    // Set the inertia matrix based on the drone ID
 }
 
 
