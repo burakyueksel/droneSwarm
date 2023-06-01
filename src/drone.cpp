@@ -12,6 +12,7 @@ Drone::Drone()
     velocity.setZero();
     angularVelocity.setZero();
     orientation.setIdentity();
+    externalTorque.setZero();
 }
 
 
@@ -23,9 +24,6 @@ void Drone::updateState(double timeStep) {
     // Update rotational dynamics using quaternions
     Eigen::Matrix3d inertiaMatrix; // Define the inertia matrix
 
-    // Calculate the torque acting on the drone
-    Eigen::Vector3d externalTorque; // Define the external torque vector
-
     // Calculate the angular acceleration based on the second-order quaternion dynamics equation
     Eigen::Vector3d angularAcceleration; // here compute the angular acceleration
 
@@ -35,4 +33,10 @@ void Drone::updateState(double timeStep) {
     // Compute q_dot from q and angular velocity. Then integrate q_dot to q.
 
     // Update other state variables (position, velocity, etc.) as needed
+
+}
+
+
+void Drone::setExternalTorque(const Eigen::Vector3d& torque) {
+    externalTorque = torque;
 }
