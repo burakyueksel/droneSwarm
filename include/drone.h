@@ -1,5 +1,10 @@
-#ifndef DRONE_H
-#define DRONE_H
+/*
+ * File: drone.h
+ * Author: Burak Yueksel
+ * Date: 2023-06-01
+ */
+
+#pragma once
 
 #include <eigen3/Eigen/Dense> // Include Eigen library for vector and matrix operations
 
@@ -21,5 +26,3 @@ private:
 
     // Define other relevant private member variables
 };
-
-#endif  // DRONE_H

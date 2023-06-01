@@ -1,5 +1,9 @@
-#ifndef SIMULATOR_H
-#define SIMULATOR_H
+/*
+ * File: simulator.h
+ * Author: Burak Yueksel
+ * Date: 2023-06-01
+ */
+#pragma once
 
 #include <vector>
 #include "drone.h"
@@ -15,5 +19,3 @@ private:
     std::vector<Drone> drones; // Vector to store the drones
     // Add other relevant private member variables
 };
-
-#endif  // SIMULATOR_H

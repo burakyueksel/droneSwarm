@@ -1,3 +1,8 @@
+/*
+ * File: main.cpp
+ * Author: Burak Yueksel
+ * Date: 2023-06-01
+ */
 #include "simulator.h"
 
 int main()

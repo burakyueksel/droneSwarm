@@ -1,3 +1,8 @@
+/*
+ * File: simulator.cpp
+ * Author: Burak Yueksel
+ * Date: 2023-06-01
+ */
 #include "simulator.h"
 
 Simulator::Simulator(int numDrones) 
