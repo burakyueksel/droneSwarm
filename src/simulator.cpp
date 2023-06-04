@@ -34,6 +34,12 @@ int main()
                       << drone.getPosition().x() << ", "
                       << drone.getPosition().y() << ", "
                       << drone.getPosition().z() << std::endl;
+            // Print the quaternion of each drone
+            std::cout << "Drone " << drone.getID() << " unit quaternion: "
+                      << drone.getQuaternion().w() << ", "
+                      << drone.getQuaternion().x() << ", "
+                      << drone.getQuaternion().y() << ", "
+                      << drone.getQuaternion().z() << std::endl;
         }
 
         // Perform other simulation tasks

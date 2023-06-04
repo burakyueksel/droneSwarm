@@ -19,7 +19,8 @@ public:
     int getID() const;
     Eigen::Vector3d getPosition() const;
     Eigen::Vector3d getVelocity() const;
-
+    Eigen::Quaterniond getQuaternion() const;
+    Eigen::Vector3d getBodyRates() const;
     // Add more member functions as needed
 
 private:

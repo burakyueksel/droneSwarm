@@ -59,9 +59,22 @@ void Drone::updateState(double timeStep) {
     Eigen::Vector3d angularMomentum = angularVelocity.cross(parameters.inertiaMatrix * angularVelocity);
     // Calculate the angular acceleration
     Eigen::Vector3d angularAcceleration  = parameters.inertiaMatrix.inverse() * (externalTorque-angularMomentum);
-    // TODO: here comes the quaternion kinematics
     // Integrate the angular acceleration to update the angular velocity
     angularVelocity += angularAcceleration * timeStep;
+    // Convert angular velocity to the time derivative of quaternion
+    // source: https://ahrs.readthedocs.io/en/latest/filters/angular.html
+    // source: https://github.com/burakyueksel/physics/blob/eeba843fe20e5fd4e2d5d2d3d9608ed038bfb069/src/physics.c#L93
+    Eigen::Quaterniond orientationDot;
+    orientationDot.w() = -0.5  * (angularVelocity.x() * orientation.x() + angularVelocity.y() * orientation.y() + angularVelocity.z() * orientation.z());
+    orientationDot.x() =  0.5  * (angularVelocity.x() * orientation.w() + angularVelocity.z() * orientation.y() - angularVelocity.y() * orientation.z());
+    orientationDot.y() =  0.5  * (angularVelocity.y() * orientation.w() - angularVelocity.z() * orientation.x() + angularVelocity.x() * orientation.z());
+    orientationDot.z() =  0.5  * (angularVelocity.z() * orientation.w() + angularVelocity.y() * orientation.x() - angularVelocity.x() * orientation.y());
+    // Integrate orientationDot with time step
+    orientation.w() += orientationDot.w() * timeStep;
+    orientation.x() += orientationDot.x() * timeStep;
+    orientation.y() += orientationDot.y() * timeStep;
+    orientation.z() += orientationDot.z() * timeStep;
+    orientation.normalize();  // Normalize the quaternion
 }
 
 // external torques: control torques, disturbance torques, etc
@@ -84,4 +97,11 @@ Eigen::Vector3d Drone::getPosition() const {
 
 Eigen::Vector3d Drone::getVelocity() const {
     return velocity;
+}
+Eigen::Quaterniond Drone::getQuaternion() const {
+    return orientation;
+}
+
+Eigen::Vector3d Drone::getBodyRates() const {
+    return angularVelocity;
 }
