@@ -4,6 +4,7 @@
  * Date: 2023-06-01
  */
 #include "drone.h"
+#include "environment.h"
 #include <iostream>
 
 Drone::Drone(int id)
@@ -42,7 +43,7 @@ void Drone::updateState(double timeStep) {
     // Update translational dynamics:
     // Compute translational acceleration
     // Compute gravity force (NED reference frame)
-    Eigen::Vector3d gravityForce(0.0, 0.0, 9.81 * parameters.mass);
+    Eigen::Vector3d gravityForce(0.0, 0.0, Environment::GRAVITY * parameters.mass);
 
     // Compute net force
     Eigen::Vector3d netForce = externalForce + gravityForce;

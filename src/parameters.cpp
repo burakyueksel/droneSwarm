@@ -1,3 +1,8 @@
+/*
+ * File: parameters.cpp
+ * Author: Burak Yueksel
+ * Date: 2023-06-01
+ */
 #include "parameters.h"
 
 namespace Parameters {
