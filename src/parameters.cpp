@@ -19,6 +19,7 @@ namespace Parameters {
         drone1Params.inertiaMatrix << 1.0, 0.0, 0.0,
                                       0.0, 2.0, 0.0,
                                       0.0, 0.0, 3.0;
+        drone1Params.initPos << 0.0, 0.0, 0.0;
         droneParams.push_back(drone1Params);
 
         // Drone 2 parameters
@@ -28,6 +29,7 @@ namespace Parameters {
         drone2Params.inertiaMatrix << 4.0, 0.0, 0.0,
                                       0.0, 5.0, 0.0,
                                       0.0, 0.0, 6.0;
+        drone2Params.initPos << 0.5, 0.0, 0.0;
         droneParams.push_back(drone2Params);
 
         // Drone 3 parameters
@@ -37,6 +39,7 @@ namespace Parameters {
         drone3Params.inertiaMatrix << 7.0, 0.0, 0.0,
                                       0.0, 8.0, 0.0,
                                       0.0, 0.0, 9.0;
+        drone3Params.initPos <<1.0, 0.0, 0.0;
         droneParams.push_back(drone3Params);
 
         // Drone 4 parameters
@@ -46,6 +49,7 @@ namespace Parameters {
         drone4Params.inertiaMatrix << 10.0, 0.0, 0.0,
                                       0.0, 11.0, 0.0,
                                       0.0, 0.0, 12.0;
+        drone4Params.initPos <<1.5, 0.0, 0.0;
         droneParams.push_back(drone4Params);
     }
 }
