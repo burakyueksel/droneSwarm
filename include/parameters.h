@@ -25,6 +25,7 @@ struct DroneParameters
     double mass;
     Eigen::Matrix3d inertiaMatrix;
     Eigen::Vector3d cogOffset;
+    Eigen::Vector3d initPos;
 };
 
 namespace Parameters {

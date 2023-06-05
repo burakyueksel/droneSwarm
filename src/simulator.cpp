@@ -6,9 +6,13 @@
 #include "drone.h"
 #include "parameters.h"
 #include <iostream>
+#include <fstream>
 
 int main()
 {
+    // Open a file to store the positions
+    std::ofstream outputFile("drone_positions.txt");
+    // Load the parameters
     Parameters::loadParameters();
 
     std::vector<Drone> drones;
@@ -29,6 +33,7 @@ int main()
         for (auto& drone : drones)
         {
             drone.updateState(timeStep);
+            // OUTPUT TO THE TERMINAL
             // Print the position of each drone
             std::cout << "Drone " << drone.getID() << " position: "
                       << drone.getPosition().x() << ", "
@@ -40,6 +45,10 @@ int main()
                       << drone.getQuaternion().x() << ", "
                       << drone.getQuaternion().y() << ", "
                       << drone.getQuaternion().z() << std::endl;
+            // OUTPUT TO THE FILE
+                    // Store the positions in the file
+            Eigen::Vector3d position = drone.getPosition();
+            outputFile << drone.getID() << " " << position.x() << " " << position.y() << " " << position.z() << "\n";
         }
 
         // Perform other simulation tasks
@@ -49,9 +58,10 @@ int main()
             drone.setExternalTorque(Eigen::Vector3d(0.0, 0.0, 0.0));
             drone.setExternalForce(Eigen::Vector3d(0.0, 0.0, 0.0));
         }
-
         // Perform other simulation tasks
     }
+    // Close the output file
+    outputFile.close();
 
     return 0;
 }

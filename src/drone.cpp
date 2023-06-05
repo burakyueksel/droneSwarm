@@ -16,6 +16,7 @@ Drone::Drone(int id)
     if (id >= 0 && id < Parameters::droneParams.size())
     {
         parameters = Parameters::droneParams[id];
+        position   = parameters.initPos;
         // Print the parameters used for this drone
         std::cout << "Drone ID: " << id << std::endl;
         std::cout << "Mass: " << parameters.mass << std::endl;
@@ -29,7 +30,7 @@ Drone::Drone(int id)
     }
     // Initialize the member variables
     velocity.setZero();
-    position.setZero();
+    //position.setZero();
     externalForce.setZero();
     angularVelocity.setZero();
     orientation.setIdentity();
