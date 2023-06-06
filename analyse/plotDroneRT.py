@@ -61,5 +61,8 @@ def update(frame):
 # Create the animation
 ani = FuncAnimation(fig, update, frames=len(positions), interval=1, blit=False)
 
+# Save the animation as a GIF file
+#ani.save('animation.gif', writer='pillow')
+
 # Show the plot
 plt.show()
