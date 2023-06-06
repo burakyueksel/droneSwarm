@@ -106,3 +106,29 @@ Eigen::Quaterniond Drone::getQuaternion() const {
 Eigen::Vector3d Drone::getBodyRates() const {
     return angularVelocity;
 }
+
+// Helper function for PID control
+double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s)
+{
+    // error
+    double error = zDes_m - z_m;
+
+    // d_error
+    double d_error = dzDes_mps - dz_mps;
+
+    // Proportional term
+    double proportional = parameters.altCtrlPID.Kp * error;
+
+    // Integral term
+    altIntegral += parameters.altCtrlPID.Ki * error * timeStep_s;
+
+    // todo: add proper anti-windup
+
+    // Derivative term
+    double derivative = parameters.altCtrlPID.Kd * d_error;
+
+    // Calculate the thrust for height control
+    double controlThrust_N = proportional + altIntegral + derivative;
+
+    return controlThrust_N;
+}

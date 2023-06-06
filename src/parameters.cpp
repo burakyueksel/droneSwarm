@@ -20,6 +20,9 @@ namespace Parameters {
                                       0.0, 2.0, 0.0,
                                       0.0, 0.0, 3.0;
         drone1Params.initPos << 0.0, 0.0, 0.0;
+        drone1Params.altCtrlPID.Kp = 1.0;
+        drone1Params.altCtrlPID.Ki = 0.01;
+        drone1Params.altCtrlPID.Kd = 0.1;
         droneParams.push_back(drone1Params);
 
         // Drone 2 parameters
@@ -30,6 +33,9 @@ namespace Parameters {
                                       0.0, 5.0, 0.0,
                                       0.0, 0.0, 6.0;
         drone2Params.initPos << 0.5, 0.0, 0.0;
+        drone2Params.altCtrlPID.Kp = 1.0;
+        drone2Params.altCtrlPID.Ki = 0.0;
+        drone2Params.altCtrlPID.Kd = 0.2;
         droneParams.push_back(drone2Params);
 
         // Drone 3 parameters
@@ -40,16 +46,9 @@ namespace Parameters {
                                       0.0, 8.0, 0.0,
                                       0.0, 0.0, 9.0;
         drone3Params.initPos <<1.0, 0.0, 0.0;
+        drone3Params.altCtrlPID.Kp = 1.0;
+        drone3Params.altCtrlPID.Ki = 0.0;
+        drone3Params.altCtrlPID.Kd = 0.2;
         droneParams.push_back(drone3Params);
-
-        // Drone 4 parameters
-        DroneParameters drone4Params;
-        drone4Params.droneType = DroneTypes::FW_MONO;
-        drone4Params.mass = 2.5; // Set the mass for drone 4
-        drone4Params.inertiaMatrix << 10.0, 0.0, 0.0,
-                                      0.0, 11.0, 0.0,
-                                      0.0, 0.0, 12.0;
-        drone4Params.initPos <<1.5, 0.0, 0.0;
-        droneParams.push_back(drone4Params);
     }
 }
