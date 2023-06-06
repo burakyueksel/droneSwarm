@@ -17,6 +17,7 @@ public:
     void setExternalForce(const Eigen::Vector3d& force); // Set the value of externalForce
     void setExternalTorque(const Eigen::Vector3d& torque); // Set the value of externalTorque
     int getID() const;
+    double altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s); // helper function for altitude control
     Eigen::Vector3d getPosition() const;
     Eigen::Vector3d getVelocity() const;
     Eigen::Quaterniond getQuaternion() const;
@@ -25,6 +26,7 @@ public:
 
 private:
     int id;
+    double altIntegral;
     DroneParameters parameters;
     Eigen::Vector3d position;
     Eigen::Vector3d velocity;
