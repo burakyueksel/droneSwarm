@@ -57,7 +57,7 @@ int main()
                       << drone.getQuaternion().z() << std::endl;
             // OUTPUT TO THE FILE
                     // Store the positions in the file
-            outputFile << drone.getID() << " " << position.x() << " " << position.y() << " " << position.z() << "\n";
+            outputFile << currentTime << " " << drone.getID() << " " << position.x() << " " << position.y() << " " << position.z() << "\n";
         }
 /*
         for (auto& drone : drones)

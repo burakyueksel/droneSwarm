@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 positions = {}
 with open("drone_positions.txt", "r") as file:
     for line in file:
-        drone_id, x, y, z = map(float, line.strip().split())
+        time, drone_id, x, y, z = map(float, line.strip().split())
         if drone_id not in positions:
             positions[drone_id] = []
         positions[drone_id].append([x, y, z])
