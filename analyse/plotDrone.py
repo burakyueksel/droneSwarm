@@ -1,15 +1,17 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
+import pdb # for debugging
 
 # Read positions from the file
 positions = {}
+time = {}
 with open("drone_positions.txt", "r") as file:
     for line in file:
-        time, drone_id, x, y, z = map(float, line.strip().split())
+        t, drone_id, x, y, z = map(float, line.strip().split())
         if drone_id not in positions:
             positions[drone_id] = []
-        positions[drone_id].append([x, y, z])
+        positions[drone_id].append([x, y, z, t])
 
 # Create a 3D plot
 fig = plt.figure(figsize=(8, 6))
@@ -79,6 +81,27 @@ ax_yz.set_xlabel('Y')
 ax_yz.set_ylabel('Z')
 ax_yz.set_title('YZ Plane')
 ax_yz.legend()
+
+# Create a separate figure for plotting z positions over time for each drone
+fig2 = plt.figure(figsize=(8, 6))
+ax2 = fig2.add_subplot(111)
+# Iterate over each drone
+for drone_id, drone_positions in positions.items():
+    # Extract z positions and time for the current drone
+    time_plot = [position[3] for position in drone_positions[::every_xth_data]]
+    z_positions = [-position[2] for position in drone_positions[::every_xth_data]]
+
+    # Set a breakpoint to pause execution
+    #pdb.set_trace()
+
+    # Create a subplot for the current drone
+    ax2.plot(time_plot, z_positions, label=f"Drone {int(drone_id)}")
+    ax2.legend()
+    ax2.set_xlabel("Time")
+    ax2.set_ylabel("Z Position")
+    ax2.set_title(f"Drone {int(drone_id)} Z Position Over Time")
+    ax2.grid(True)
+
 
 # Adjust the spacing between subplots
 plt.tight_layout()
