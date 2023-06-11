@@ -35,9 +35,9 @@ This will generate a plot similar to the following
 
 In this particular figure we are seeing that multiple drones are in freefall for 1 second.
 
-Here you can see a short animation for that slightly controlled fall for 3 drones that have different altitude control parameters:
+After adding a tuned PID controller to the altitude, you will see something like this:
 
-![animation](https://github.com/burakyueksel/droneSwarm/assets/40430575/21242dbb-67ef-4c4d-b238-0c3ac13fe6b2)
+![image](https://github.com/burakyueksel/droneSwarm/assets/40430575/2deed7ed-7426-441c-a193-67de03369f71)
 
 
 ### Clean
