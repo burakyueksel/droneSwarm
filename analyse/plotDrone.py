@@ -33,9 +33,9 @@ for drone_id, drone_positions in positions.items():
     ax.scatter(x[-1], y[-1], z[-1], marker='x', color='black')
 
 # Set plot labels and title
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
+ax.set_xlabel('X [m]')
+ax.set_ylabel('Y [m]')
+ax.set_zlabel('Z [m]')
 ax.set_title('Drone Positions')
 ax.legend()
 
@@ -49,8 +49,8 @@ for drone_id, drone_positions in positions.items():
     # Plot the start and end positions as a black cross
     ax_xy.plot(x[0], y[0], marker='x', color='black')
     ax_xy.plot(x[-1], y[-1], marker='x', color='black')
-ax_xy.set_xlabel('X')
-ax_xy.set_ylabel('Y')
+ax_xy.set_xlabel('X [m]')
+ax_xy.set_ylabel('Y [m]')
 ax_xy.set_title('XY Plane')
 ax_xy.legend()
 
@@ -63,8 +63,8 @@ for drone_id, drone_positions in positions.items():
     # Plot the start and end positions as a black cross
     ax_xz.plot(x[0], z[0], marker='x', color='black')
     ax_xz.plot(x[-1], z[-1], marker='x', color='black')
-ax_xz.set_xlabel('X')
-ax_xz.set_ylabel('Z')
+ax_xz.set_xlabel('X [m]')
+ax_xz.set_ylabel('Z [m]')
 ax_xz.set_title('XZ Plane')
 ax_xz.legend()
 
@@ -77,8 +77,8 @@ for drone_id, drone_positions in positions.items():
     # Plot the start and end positions as a black cross
     ax_yz.plot(y[0], z[0], marker='x', color='black')
     ax_yz.plot(y[-1], z[-1], marker='x', color='black')
-ax_yz.set_xlabel('Y')
-ax_yz.set_ylabel('Z')
+ax_yz.set_xlabel('Y [m]')
+ax_yz.set_ylabel('Z [m]')
 ax_yz.set_title('YZ Plane')
 ax_yz.legend()
 
@@ -97,10 +97,10 @@ for drone_id, drone_positions in positions.items():
     # Create a subplot for the current drone
     ax2.plot(time_plot, z_positions, label=f"Drone {int(drone_id)}")
     ax2.legend()
-    ax2.set_xlabel("Time")
-    ax2.set_ylabel("Z Position")
-    ax2.set_title(f"Drone {int(drone_id)} Z Position Over Time")
-    ax2.grid(True)
+ax2.set_xlabel("Time")
+ax2.set_ylabel("Z Position [m]")
+ax2.set_title("Drone Z Position Over Time")
+ax2.grid(True)
 
 
 # Adjust the spacing between subplots

@@ -45,6 +45,7 @@ int main()
             drone.updateState(Environment::timeStep);
             // OUTPUT TO THE TERMINAL
             // Print the position of each drone
+            /*
             std::cout << "Drone " << drone.getID() << " position: "
                       << position.x() << ", "
                       << position.y() << ", "
@@ -55,6 +56,7 @@ int main()
                       << drone.getQuaternion().x() << ", "
                       << drone.getQuaternion().y() << ", "
                       << drone.getQuaternion().z() << std::endl;
+            */
             // OUTPUT TO THE FILE
                     // Store the positions in the file
             outputFile << currentTime << " " << drone.getID() << " " << position.x() << " " << position.y() << " " << position.z() << "\n";
