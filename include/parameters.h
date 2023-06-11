@@ -21,6 +21,8 @@ struct DroneTypes
 
 struct altCtrlPidParameters
 {
+    double omega;
+    double xi;
     double Kp;
     double Ki;
     double Kd;
