@@ -47,3 +47,22 @@ A clean rule is implemented for your convenience. If you like to remove the bina
 ```console
 make clean_files
 ```
+
+## Shell scripts
+
+Make sure you do
+
+```console
+chmod +x <name_of_the_sh_file.sh>
+```
+to the shell scripts.
+
+Run them with
+
+```console
+./<name_of_the_sh_file.sh>
+```
+
+
+
+- runSimulation.sh will clean already existing Makefile, do cmake and make, run the simulator and plot the positions.
