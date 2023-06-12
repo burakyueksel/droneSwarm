@@ -1,68 +1,40 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.animation import FuncAnimation
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+import pdb # for debugging
+from matplotlib import animation
 
-# Initialize the figure and axes for 3D plot
-fig = plt.figure()
-ax_3d = fig.add_subplot(121, projection='3d')
+# Read positions from the file
+positions = {}
+time = {}
+with open("drone_positions.txt", "r") as file:
+    for line in file:
+        t, drone_id, x, y, z = map(float, line.strip().split())
+        if drone_id not in positions:
+            positions[drone_id] = []
+        positions[drone_id].append([x, y, z, t])
 
-# Initialize the figure and axes for xz-plane projection
-ax_xz = fig.add_subplot(122)
-ax_xz.set_xlabel('X')
-ax_xz.set_ylabel('Z')
+# Create a 3D plot
+fig = plt.figure(figsize=(8, 6))
+#ax = fig.add_subplot(221, projection='3d')
 
-# Read the data from the file
-data = np.loadtxt('drone_positions.txt', delimiter=' ', skiprows=1)
-current_times = data[:, 0]
-drone_ids = data[:, 1]
-positions = data[:, 2:]
+# Plot every x-th point
+every_xth_data = 100
 
-# Keep track of the current frame
-current_frame = 0
-
-# Define the update function for the animation
-def update(frame):
-    global current_frame
-
-    # Clear the 3D plot
-    ax_3d.cla()
-
-    # Plot the positions up to the current frame in 3D
-    for drone_id in np.unique(drone_ids):
-        mask = np.logical_and(drone_ids == drone_id, np.arange(len(drone_ids)) <= current_frame)
-        ax_3d.plot(positions[mask, 0], positions[mask, 1], positions[mask, 2], label=f'Drone {int(drone_id)}')
-
-    # Set plot labels and legend for 3D plot
-    ax_3d.set_xlabel('X')
-    ax_3d.set_ylabel('Y')
-    ax_3d.set_zlabel('Z')
-    ax_3d.legend()
-
-    # Set the z-axis limits for 3D plot
-    ax_3d.set_zlim(-50, 50)
-
-    # Clear the xz-plane projection plot
-    ax_xz.cla()
-
-    # Plot the positions up to the current frame in xz-plane projection
-    for drone_id in np.unique(drone_ids):
-        mask = np.logical_and(drone_ids == drone_id, np.arange(len(drone_ids)) <= current_frame)
-        ax_xz.plot(positions[mask, 0], positions[mask, 2], label=f'Drone {int(drone_id)}')
-
-    # Set plot labels and legend for xz-plane projection
-    ax_xz.set_xlabel('X')
-    ax_xz.set_ylabel('Z')
-    ax_xz.legend()
-
-    # Increment the current frame
-    current_frame += 1000
-
-# Create the animation
-ani = FuncAnimation(fig, update, frames=len(positions), interval=1, blit=False)
-
-# Save the animation as a GIF file
-#ani.save('animation.gif', writer='pillow')
-
-# Show the plot
+# XZ plot
+ax_xz = fig.add_subplot(111)
+for drone_id, drone_positions in positions.items():
+    x = [position[0] for position in drone_positions[::every_xth_data]]
+    z = [-position[2] for position in drone_positions[::every_xth_data]]  # z comes in NED. Revert sign for negative down, positive up
+    #pdb.set_trace()
+    line, = ax_xz.plot(x, z, 'o-', label=f"Drone {int(drone_id)}")
+    def connect(i):
+        start=max((i-3,0))
+        line.set_data(x[start:i],z[start:i])
+        return line,
+    ani = animation.FuncAnimation(fig, connect, np.arange(1, 100), interval=100)
 plt.show()
+ax_xz.set_xlabel('X [m]')
+ax_xz.set_ylabel('Z [m]')
+ax_xz.set_title('XZ Plane')
+ax_xz.legend()
