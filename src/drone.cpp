@@ -107,7 +107,7 @@ Eigen::Vector3d Drone::getBodyRates() const {
     return angularVelocity;
 }
 
-// Helper function for PID control
+//  Altitude PID control
 double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s)
 {
     // error
@@ -131,4 +131,44 @@ double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double 
     double controlThrust_N = proportional + altIntegral + derivative;
 
     return controlThrust_N;
+}
+
+// Attitude, tilt prioritizing quaternion based control
+Eigen::Vector3d Drone::attTiltPrioControl(Eigen::Quaterniond quatDes, Eigen::Quaterniond quat, Eigen::Vector3d angVelDes_rps, Eigen::Vector3d angVel_rps, Eigen::Vector3d angVelDotEst_rps)
+{
+    // source:https://www.flyingmachinearena.ethz.ch/wp-content/publications/2018/breTCST18.pdf
+
+    // eq.13
+    Eigen::Quaterniond quatError = quatDes * quat.inverse();
+    // eq. 14
+    Eigen::Vector3d angVelErr_rps = angVelDes_rps - angVel_rps;
+    // compute 1/sqrt(quat.w² + quat.z²)
+    double qNorm = quatError.w()*quatError.w() + quatError.z()*quatError.z();
+    double oneOverQuatErrRedNorm;
+    // in case quat isn not well defined
+    // this happens in the following case as an example:
+    // quat is the quaternion between a desired frame and the current frame
+    // z axis of the desired frame is aligned exactly at the opposite direction of the z axis of the current frame
+    if (qNorm<1e-6)
+    {
+        oneOverQuatErrRedNorm = 0.001; // a small number.
+    }
+    else
+    {
+        oneOverQuatErrRedNorm = 1/sqrtf(qNorm);
+    }
+    // eq. 18
+    Eigen::Quaterniond quatErrRed;
+    quatErrRed.w() = oneOverQuatErrRedNorm * (quatError.w()*quatError.w() + quatError.z()*quatError.z());
+    quatErrRed.x() = oneOverQuatErrRedNorm * (quatError.w()*quatError.x() - quatError.y()*quatError.z());
+    quatErrRed.y() = oneOverQuatErrRedNorm * (quatError.w()*quatError.y() + quatError.x()*quatError.z());
+    quatErrRed.z() = 0.0;
+    // eq. 20
+    Eigen::Quaterniond quatErrYaw;
+    quatErrYaw.w() = oneOverQuatErrRedNorm * quatError.w();
+    quatErrYaw.x() = 0.0;
+    quatErrYaw.y() = 0.0;
+    quatErrYaw.z() = oneOverQuatErrRedNorm * quatError.z();
+    // eq. 23
+    
 }

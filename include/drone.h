@@ -18,6 +18,7 @@ public:
     void setExternalTorque(const Eigen::Vector3d& torque); // Set the value of externalTorque
     int getID() const;
     double altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s); // helper function for altitude control
+    Eigen::Vector3d attTiltPrioControl(Eigen::Quaterniond quatDes, Eigen::Quaterniond quat, Eigen::Vector3d angVelDes_rps, Eigen::Vector3d angVel_rps, Eigen::Vector3d angVelDotEst_rps);
     Eigen::Vector3d getPosition() const;
     Eigen::Vector3d getVelocity() const;
     Eigen::Quaterniond getQuaternion() const;
