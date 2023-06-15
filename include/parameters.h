@@ -21,11 +21,16 @@ struct DroneTypes
 
 struct altCtrlPidParameters
 {
-    double omega;
-    double xi;
     double Kp;
     double Ki;
     double Kd;
+};
+
+struct attCtrlTiltPrioParameters
+{
+    Eigen::Matrix3d KP;
+    Eigen::Matrix3d KD;
+
 };
 
 struct DroneParameters
@@ -36,6 +41,7 @@ struct DroneParameters
     Eigen::Vector3d cogOffset;
     Eigen::Vector3d initPos;
     altCtrlPidParameters altCtrlPID;
+    attCtrlTiltPrioParameters attCtrlTiltPrio;
 };
 
 namespace Parameters {
