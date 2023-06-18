@@ -112,6 +112,49 @@ int mySignum(T value) {
     return (value > T(0)) - (value < T(0));
 }
 
+Eigen::Vector3d quaternionToEulerAngles(const Eigen::Quaterniond& q)
+{
+    // Convert quaternion to rotation matrix
+    Eigen::Matrix3d rotationMatrix = q.normalized().toRotationMatrix();
+    // Define Euler angle vector
+    Eigen::Vector3d eulerAngles;
+
+    // Extract roll, pitch, and yaw angles from rotation matrix
+    eulerAngles.x() = atan2(rotationMatrix(2, 1), rotationMatrix(2, 2));
+    eulerAngles.y() = asin(-rotationMatrix(2, 0));
+    eulerAngles.z() = atan2(rotationMatrix(1, 0), rotationMatrix(0, 0));
+
+    return eulerAngles;
+}
+
+Eigen::Matrix3d quaternionToRotationMatrix(const Eigen::Quaterniond& q)
+{
+    // Convert quaternion to rotation matrix
+    Eigen::Matrix3d rotationMatrix = q.normalized().toRotationMatrix();
+    return rotationMatrix;
+}
+
+/*
+Implements eq 1 of https://www.flyingmachinearena.ethz.ch/wp-content/publications/2018/breTCST18.pdf
+*/
+Eigen::Quaterniond angleAxisToQuaternion (const double& angle, const Eigen::Vector3d vector)
+{
+    // define unit quaternion
+    Eigen::Quaterniond quat;
+    // trigonometric constants
+    double ca2 = cos(angle/2);
+    double sa2 = sin(angle/2);
+    quat.w() = ca2;
+    quat.x() = vector.x()*sa2;
+    quat.y() = vector.y()*sa2;
+    quat.z() = vector.z()*sa2;
+
+    return quat;
+}
+
+//  TODO: 2nd order reference position dynamics
+//  TODO: 2nd order reference attitude dynamics
+
 //  Altitude PID control
 double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s)
 {
@@ -144,7 +187,7 @@ Eigen::Vector3d Drone::attTiltPrioControl(Eigen::Quaterniond quatDes, Eigen::Qua
     // source:https://www.flyingmachinearena.ethz.ch/wp-content/publications/2018/breTCST18.pdf
 
     // eq.13
-    Eigen::Quaterniond quatError = quatDes * quat.inverse();
+    Eigen::Quaterniond quatError = quatDes * quat.inverse(); // assumption: eigen does the correct multiplication
     // eq. 14
     Eigen::Vector3d angVelErr_rps = angVelDes_rps - angVel_rps;
     // compute 1/sqrt(quat.w² + quat.z²)
