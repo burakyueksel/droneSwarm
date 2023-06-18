@@ -107,6 +107,11 @@ Eigen::Vector3d Drone::getBodyRates() const {
     return angularVelocity;
 }
 
+template <typename T>
+int mySignum(T value) {
+    return (value > T(0)) - (value < T(0));
+}
+
 //  Altitude PID control
 double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s)
 {
@@ -170,5 +175,11 @@ Eigen::Vector3d Drone::attTiltPrioControl(Eigen::Quaterniond quatDes, Eigen::Qua
     quatErrYaw.y() = 0.0;
     quatErrYaw.z() = oneOverQuatErrRedNorm * quatError.z();
     // eq. 23
-    
+    Eigen::Vector3d tauFF = parameters.inertiaMatrix*angVelDotEst_rps - (parameters.inertiaMatrix*angVel_rps).cross(angVel_rps);
+    // eq. 21
+    Eigen::Vector3d tauCtrl_Nm = parameters.attCtrlTiltPrio.KP * quatErrRed.vec() +
+                                 parameters.attCtrlTiltPrio.KP(2,2) * mySignum(quatError.w()) * quatErrYaw.vec() +
+                                 parameters.attCtrlTiltPrio.KD * angVelErr_rps +
+                                 tauFF;
+    return tauCtrl_Nm;
 }
