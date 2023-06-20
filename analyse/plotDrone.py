@@ -4,14 +4,13 @@ from mpl_toolkits.mplot3d import Axes3D
 import pdb # for debugging
 
 # Read positions from the file
-positions = {}
-time = {}
-with open("drone_positions.txt", "r") as file:
+drone_data_all = {}
+with open("drone_data.txt", "r") as file:
     for line in file:
-        t, drone_id, x, y, z = map(float, line.strip().split())
-        if drone_id not in positions:
-            positions[drone_id] = []
-        positions[drone_id].append([x, y, z, t])
+        t, drone_id, x, y, z, qw, qx, qy, qz = map(float, line.strip().split())
+        if drone_id not in drone_data_all:
+            drone_data_all[drone_id] = []
+        drone_data_all[drone_id].append([t, x, y, z, qw, qx, qy, qz])
 
 # Create a 3D plot
 fig = plt.figure(figsize=(8, 6))
@@ -21,10 +20,10 @@ ax = fig.add_subplot(221, projection='3d')
 every_xth_data = 100
 
 # Plot the drone positions by ID
-for drone_id, drone_positions in positions.items():
-    x = [position[0] for position in drone_positions[::every_xth_data]]
-    y = [position[1] for position in drone_positions[::every_xth_data]]
-    z = [-position[2] for position in drone_positions[::every_xth_data]] # z comes in NED. Revert sign for negative down, positive up
+for drone_id, drone_data in drone_data_all.items():
+    x = [data[1] for data in drone_data[::every_xth_data]]
+    y = [data[2] for data in drone_data[::every_xth_data]]
+    z = [-data[3] for data in drone_data[::every_xth_data]] # z comes in NED. Revert sign for negative down, positive up
 
     ax.scatter(x, y, z, marker='.', label=f"Drone {int(drone_id)}", linewidths=0.1)
 
@@ -42,9 +41,9 @@ ax.legend()
 
 # XY plot
 ax_xy = fig.add_subplot(222)
-for drone_id, drone_positions in positions.items():
-    x = [position[0] for position in drone_positions[::every_xth_data]]
-    y = [position[1] for position in drone_positions[::every_xth_data]]
+for drone_id, drone_data in drone_data_all.items():
+    x = [data[1] for data in drone_data[::every_xth_data]]
+    y = [data[2] for data in drone_data[::every_xth_data]]
     ax_xy.plot(x, y, '.', label=f"Drone {int(drone_id)}")
     # Plot the start and end positions as a black cross
     ax_xy.plot(x[0], y[0], marker='x', color='black')
@@ -56,9 +55,9 @@ ax_xy.legend()
 
 # XZ plot
 ax_xz = fig.add_subplot(223)
-for drone_id, drone_positions in positions.items():
-    x = [position[0] for position in drone_positions[::every_xth_data]]
-    z = [-position[2] for position in drone_positions[::every_xth_data]]  # z comes in NED. Revert sign for negative down, positive up
+for drone_id, drone_data in drone_data_all.items():
+    x = [data[1] for data in drone_data[::every_xth_data]]
+    z = [-data[3] for data in drone_data[::every_xth_data]]  # z comes in NED. Revert sign for negative down, positive up
     ax_xz.plot(x, z, '.', label=f"Drone {int(drone_id)}")
     # Plot the start and end positions as a black cross
     ax_xz.plot(x[0], z[0], marker='x', color='black')
@@ -70,9 +69,9 @@ ax_xz.legend()
 
 # YZ plot
 ax_yz = fig.add_subplot(224)
-for drone_id, drone_positions in positions.items():
-    y = [position[1] for position in drone_positions[::every_xth_data]]
-    z = [-position[2] for position in drone_positions[::every_xth_data]]  # z comes in NED. Revert sign for negative down, positive up
+for drone_id, drone_data in drone_data_all.items():
+    y = [data[2] for data in drone_data[::every_xth_data]]
+    z = [-data[3] for data in drone_data[::every_xth_data]]  # z comes in NED. Revert sign for negative down, positive up
     ax_yz.plot(y, z, '.', label=f"Drone {int(drone_id)}")
     # Plot the start and end positions as a black cross
     ax_yz.plot(y[0], z[0], marker='x', color='black')
@@ -86,10 +85,10 @@ ax_yz.legend()
 fig2 = plt.figure(figsize=(8, 6))
 ax2 = fig2.add_subplot(111)
 # Iterate over each drone
-for drone_id, drone_positions in positions.items():
+for drone_id, drone_data in drone_data_all.items():
     # Extract z positions and time for the current drone
-    time_plot = [position[3] for position in drone_positions[::every_xth_data]]
-    z_positions = [-position[2] for position in drone_positions[::every_xth_data]]
+    time_plot = [data[0] for data in drone_data[::every_xth_data]]
+    z_positions = [-data[3] for data in drone_data[::every_xth_data]]
 
     # Set a breakpoint to pause execution
     #pdb.set_trace()

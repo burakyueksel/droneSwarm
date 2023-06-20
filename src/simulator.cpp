@@ -12,7 +12,7 @@
 int main()
 {
     // Open a file to store the positions
-    std::ofstream outputFile("drone_positions.txt");
+    std::ofstream outputFile("drone_data.txt");
     // Load the parameters
     Parameters::loadParameters();
 
@@ -34,6 +34,7 @@ int main()
             // get the translational states of each drone
             Eigen::Vector3d position = drone.getPosition();
             Eigen::Vector3d velocity = drone.getVelocity();
+            Eigen::Quaterniond quaternion = drone.getQuaternion();
             // altitude control thrust for each drone
             double zDes_m = -50;
             double dzDes_mps = 0;
@@ -59,7 +60,11 @@ int main()
             */
             // OUTPUT TO THE FILE
                     // Store the positions in the file
-            outputFile << currentTime << " " << drone.getID() << " " << position.x() << " " << position.y() << " " << position.z() << "\n";
+            outputFile << currentTime
+                       << " " << drone.getID()
+                       << " " << position.x() << " " << position.y() << " " << position.z()
+                       << " " << quaternion.w() << " " << quaternion.x() << " " << quaternion.y() << " " << quaternion.z()
+                       << "\n";
         }
 /*
         for (auto& drone : drones)
