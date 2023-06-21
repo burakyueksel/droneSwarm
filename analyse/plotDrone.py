@@ -13,8 +13,8 @@ with open("drone_data.txt", "r") as file:
         drone_data_all[drone_id].append([t, x, y, z, qw, qx, qy, qz])
 
 # Create a 3D plot
-fig = plt.figure(figsize=(8, 6))
-ax = fig.add_subplot(221, projection='3d')
+fig0 = plt.figure(figsize=(8, 6))
+ax0 = fig0.add_subplot(111, projection='3d')
 
 # Plot every x-th point
 every_xth_data = 100
@@ -25,22 +25,38 @@ for drone_id, drone_data in drone_data_all.items():
     y = [data[2] for data in drone_data[::every_xth_data]]
     z = [-data[3] for data in drone_data[::every_xth_data]] # z comes in NED. Revert sign for negative down, positive up
 
-    ax.scatter(x, y, z, marker='.', label=f"Drone {int(drone_id)}", linewidths=0.1)
+    ax0.scatter(x, y, z, marker='.', label=f"Drone {int(drone_id)}", linewidths=0.1)
 
     # Plot the start and end positions as a black cross
-    ax.scatter(x[0], y[0], z[0], marker='x', color='black')
-    ax.scatter(x[-1], y[-1], z[-1], marker='x', color='black')
+    ax0.scatter(x[0], y[0], z[0], marker='x', color='black')
+    ax0.scatter(x[-1], y[-1], z[-1], marker='x', color='black')
+
+    # Compute heading direction from quaternion
+    heading_directions = []
+    for data in drone_data[::every_xth_data]:
+        qw, qx, qy, qz = data[4:]
+        roll = np.arctan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
+        pitch = np.arcsin(2 * (qw * qy - qx * qz))
+        heading = np.arctan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+        heading_directions.append(heading)
+
+    # Plot the heading directions
+    ax0.quiver(x, y, z, np.cos(heading_directions), np.sin(heading_directions), np.zeros_like(z),
+              length=0.2, arrow_length_ratio=0.1, color='red', alpha=0.8)
 
 # Set plot labels and title
-ax.set_xlabel('X [m]')
-ax.set_ylabel('Y [m]')
-ax.set_zlabel('Z [m]')
-ax.set_title('Drone Positions')
-ax.legend()
+ax0.set_xlabel('X [m]')
+ax0.set_ylabel('Y [m]')
+ax0.set_zlabel('Z [m]')
+ax0.set_title('Drone Positions')
+ax0.legend()
 
 
+
+# Pllots on plane
+fig = plt.figure(figsize=(8, 6))
 # XY plot
-ax_xy = fig.add_subplot(222)
+ax_xy = fig.add_subplot(131)
 for drone_id, drone_data in drone_data_all.items():
     x = [data[1] for data in drone_data[::every_xth_data]]
     y = [data[2] for data in drone_data[::every_xth_data]]
@@ -48,13 +64,14 @@ for drone_id, drone_data in drone_data_all.items():
     # Plot the start and end positions as a black cross
     ax_xy.plot(x[0], y[0], marker='x', color='black')
     ax_xy.plot(x[-1], y[-1], marker='x', color='black')
+
 ax_xy.set_xlabel('X [m]')
 ax_xy.set_ylabel('Y [m]')
 ax_xy.set_title('XY Plane')
 ax_xy.legend()
 
 # XZ plot
-ax_xz = fig.add_subplot(223)
+ax_xz = fig.add_subplot(132)
 for drone_id, drone_data in drone_data_all.items():
     x = [data[1] for data in drone_data[::every_xth_data]]
     z = [-data[3] for data in drone_data[::every_xth_data]]  # z comes in NED. Revert sign for negative down, positive up
@@ -68,7 +85,7 @@ ax_xz.set_title('XZ Plane')
 ax_xz.legend()
 
 # YZ plot
-ax_yz = fig.add_subplot(224)
+ax_yz = fig.add_subplot(133)
 for drone_id, drone_data in drone_data_all.items():
     y = [data[2] for data in drone_data[::every_xth_data]]
     z = [-data[3] for data in drone_data[::every_xth_data]]  # z comes in NED. Revert sign for negative down, positive up
