@@ -155,6 +155,26 @@ Eigen::Quaterniond angleAxisToQuaternion (const double& angle, const Eigen::Vect
 //  TODO: 2nd order reference position dynamics
 //  TODO: 2nd order reference attitude dynamics
 
+// Altitude Ref Dynamics
+
+Eigen::Vector3d Drone::altControlRefDyn(double zCmd, double timeStep_s)
+{
+    // Compute the control input (acceleration)
+    double error = zCmd - g_altCtrlRefDynStates[2];
+    double timeConst = parameters.altCtrlRefDyn.timeConst;
+    double damping = parameters.altCtrlRefDyn.damping;
+    double acc_now = error *  timeConst * timeConst - 2.0 * damping * timeConst * g_altCtrlRefDynStates[1];
+    // TODO: add acc limits
+    g_altCtrlRefDynStates[0] = acc_now;
+    // integrate to velocity now
+    g_altCtrlRefDynStates[1] = g_altCtrlRefDynStates[1] + g_altCtrlRefDynStates[0] * timeStep_s;
+    //TODO: add vel limits
+    // integrate to position now
+    g_altCtrlRefDynStates[2] = g_altCtrlRefDynStates[2] + g_altCtrlRefDynStates[1]*timeStep_s;
+
+    return g_altCtrlRefDynStates;
+}
+
 //  Altitude PID control
 double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s)
 {
@@ -168,7 +188,7 @@ double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double 
     double proportional = parameters.altCtrlPID.Kp * error;
 
     // Integral term
-    altIntegral += parameters.altCtrlPID.Ki * error * timeStep_s;
+    g_altIntegral += parameters.altCtrlPID.Ki * error * timeStep_s;
 
     // todo: add proper anti-windup
 
@@ -176,7 +196,7 @@ double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double 
     double derivative = parameters.altCtrlPID.Kd * d_error;
 
     // Calculate the thrust for height control
-    double controlThrust_N = proportional + altIntegral + derivative;
+    double controlThrust_N = proportional + g_altIntegral + derivative;
 
     return controlThrust_N;
 }

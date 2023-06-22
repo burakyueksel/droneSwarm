@@ -33,6 +33,12 @@ struct attCtrlTiltPrioParameters
 
 };
 
+struct altCtrlRefDynParameters
+{
+    double timeConst;
+    double damping;
+};
+
 struct DroneParameters
 {
     DroneTypes::Type droneType;
@@ -40,6 +46,7 @@ struct DroneParameters
     Eigen::Matrix3d inertiaMatrix;
     Eigen::Vector3d cogOffset;
     Eigen::Vector3d initPos;
+    altCtrlRefDynParameters altCtrlRefDyn;
     altCtrlPidParameters altCtrlPID;
     attCtrlTiltPrioParameters attCtrlTiltPrio;
 };

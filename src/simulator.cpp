@@ -36,9 +36,9 @@ int main()
             Eigen::Vector3d velocity = drone.getVelocity();
             Eigen::Quaterniond quaternion = drone.getQuaternion();
             // altitude control thrust for each drone
-            double zDes_m = -50;
-            double dzDes_mps = 0;
-            double thrustCtrl = drone.altPidControl(zDes_m, position.z(), dzDes_mps, velocity.z(), Environment::timeStep);
+            double zCmd_m = -50;
+            Eigen::Vector3d altRefStates = drone.altControlRefDyn(zCmd_m, Environment::timeStep);
+            double thrustCtrl = drone.altPidControl(altRefStates[2], position.z(), altRefStates[1], velocity.z(), Environment::timeStep);
             // set the external torques and forces
             drone.setExternalTorque(Eigen::Vector3d(0.0, 0.0, 0.0));
             drone.setExternalForce(Eigen::Vector3d(0.0, 0.0, thrustCtrl));
