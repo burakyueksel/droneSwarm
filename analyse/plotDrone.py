@@ -42,7 +42,7 @@ for drone_id, drone_data in drone_data_all.items():
 
     # Plot the heading directions
     ax0.quiver(x, y, z, np.cos(heading_directions), np.sin(heading_directions), np.zeros_like(z),
-              length=0.2, arrow_length_ratio=0.1, color='red', alpha=0.8)
+              length=0.02, arrow_length_ratio=0.1, color='red', alpha=0.8)
 
 # Set plot labels and title
 ax0.set_xlabel('X [m]')
