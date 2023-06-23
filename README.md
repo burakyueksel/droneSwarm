@@ -23,6 +23,8 @@ Let us see which one will prevail, or maybe they merge.
 - Attitude control based on tilt prioritization with proper gain selection and assignment.
 - Logging of drone states in the swarm.
 - Visualisation of drone states in the swarm.
+- Altitude controller reference dynamics (2nd order) added.
+- Cmake test for CI/CD added.
 
 ## What is in pipleline
 
