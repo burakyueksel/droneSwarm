@@ -40,8 +40,8 @@ int main()
             Eigen::Vector3d altRefStates = drone.altControlRefDyn(zCmd_m, Environment::timeStep);
             double thrustCtrl = drone.altPidControl(altRefStates[2], position.z(), altRefStates[1], velocity.z(), Environment::timeStep);
             // set the external torques and forces
-            drone.setExternalTorque(Eigen::Vector3d(0.0, 0.0, 0.0));
-            drone.setExternalForce(Eigen::Vector3d(0.0, 0.0, thrustCtrl));
+            drone.setExternalTorqueBody(Eigen::Vector3d(0.0, 0.0, 0.0));
+            drone.setExternalForceBody(Eigen::Vector3d(0.0, 0.0, thrustCtrl));
             // update all states
             drone.updateState(Environment::timeStep);
             // OUTPUT TO THE TERMINAL
