@@ -60,9 +60,43 @@ Eigen::Vector3d quaternionToEulerAngles(const Eigen::Quaterniond& q)
 Eigen::Matrix3d quaternionToRotationMatrix(const Eigen::Quaterniond& q)
 {
     // Convert quaternion to rotation matrix
+    // This rotation represents the orientation of the body frame w.r.t. an inertial frame.
+    // Meaning, it can left multiply a vector represented in body frame, to bring it to the inertial frame
     Eigen::Matrix3d rotationMatrix = q.normalized().toRotationMatrix();
+
     return rotationMatrix;
 }
+
+Eigen::Vector3d quat2Re3(const Eigen::Quaterniond& q)
+{
+    // Compute Re3, that is the third column of the rotation matrix (from body to inertial frame)
+    Eigen::Matrix3d R = quaternionToRotationMatrix(q);
+    Eigen::Vector3d Re3 = R.col(2);
+
+    return Re3;
+}
+
+Eigen::Vector3d quat2RTe3(const Eigen::Quaterniond& q)
+{
+    // Compute R^Te3, that is the third column of the transpose of the rotation matrix (from inertial to body frame)
+    Eigen::Matrix3d R = quaternionToRotationMatrix(q);
+    Eigen::Matrix3d RT = R.transpose();
+    Eigen::Vector3d RTe3 = RT.col(2);
+
+    return RTe3;
+}
+
+double quat2R33(const Eigen::Quaterniond& q)
+{
+    // compute the (3,3)th element of the rotation matrix from quaternion
+    Eigen::Matrix3d R = quaternionToRotationMatrix(q);
+    double minThreshold = 1e-4;
+    // protect it for very small numbers (we tend to use this value for division)
+    double R33 = std::abs(R.coeff(2, 2)) < minThreshold ? minThreshold : R.coeff(2, 2);
+
+    return R33;
+}
+
 
 /*
 Implements eq 1 of https://www.flyingmachinearena.ethz.ch/wp-content/publications/2018/breTCST18.pdf
@@ -96,7 +130,7 @@ void Drone::updateState(double timeStep) {
     Eigen::Matrix3d rotMat = quaternionToRotationMatrix(orientation);
 
     // Compute net force in inertial frame
-    Eigen::Vector3d netForce = rotMat*externalForceBody + gravityForce;
+    Eigen::Vector3d netForce = rotMat * externalForceBody + gravityForce;
 
     // Compute acceleration
     Eigen::Vector3d acceleration = netForce / parameters.mass;
@@ -201,7 +235,12 @@ double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double 
     double derivative = parameters.altCtrlPID.Kd * d_error;
 
     // Calculate the thrust for height control
-    double controlThrust_N = proportional + g_altIntegral + derivative;
+    // Following lines will implement the correct thrust computation (assumption: thrust aligned with the body z axis)
+    double R33 = quat2R33(orientation);
+    double controlThrust_N =   parameters.mass * (Environment::GRAVITY + proportional + g_altIntegral + derivative) / R33;
+
+    // Following lines implements generic PID, which will perform very well if you stick to the parametrization I gave in parameter.cpp.
+    //double controlThrust_N =   proportional + g_altIntegral + derivative;
 
     return controlThrust_N;
 }
