@@ -33,10 +33,17 @@ struct attCtrlTiltPrioParameters
 
 };
 
-struct altCtrlRefDynParameters
+struct linSysParameters
 {
     double timeConst;
     double damping;
+};
+
+struct posCtrlStates
+{
+    Eigen::Vector2d posRef;
+    Eigen::Vector2d velRef;
+    Eigen::Vector2d accRef;
 };
 
 struct DroneParameters
@@ -46,7 +53,8 @@ struct DroneParameters
     Eigen::Matrix3d inertiaMatrix;
     Eigen::Vector3d cogOffset;
     Eigen::Vector3d initPos;
-    altCtrlRefDynParameters altCtrlRefDyn;
+    linSysParameters posCtrlRefDyn;
+    linSysParameters altCtrlRefDyn;
     altCtrlPidParameters altCtrlPID;
     attCtrlTiltPrioParameters attCtrlTiltPrio;
 };
