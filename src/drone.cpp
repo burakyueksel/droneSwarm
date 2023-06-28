@@ -194,6 +194,25 @@ Eigen::Vector3d Drone::getBodyRates() const {
 //  TODO: 2nd order reference position dynamics
 //  TODO: 2nd order reference attitude dynamics
 
+posCtrlStates Drone::posControlRefDyn(Eigen::Vector2d posCmd, double timeStep_s)
+{
+    Eigen::Vector2d posError = posCmd - g_posCtrlRefDynStates.posRef;
+    double timeConst = parameters.posCtrlRefDyn.timeConst;
+    double damping   = parameters.posCtrlRefDyn.damping;
+    Eigen::Vector2d accNow;
+    accNow << posError[0] * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.posRef[0],
+              posError[1] * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.posRef[1];
+    // TODO: add acc limits
+    g_posCtrlRefDynStates.accRef = accNow;
+    // integrate to velocity now
+    g_posCtrlRefDynStates.velRef = g_posCtrlRefDynStates.velRef + g_posCtrlRefDynStates.accRef * timeStep_s;
+    // TODO: add vel limits
+    // integrate to position now
+    g_posCtrlRefDynStates.posRef = g_posCtrlRefDynStates.posRef + g_posCtrlRefDynStates.velRef * timeStep_s;
+
+    return g_posCtrlRefDynStates;
+}
+
 // Altitude Ref Dynamics
 
 Eigen::Vector3d Drone::altControlRefDyn(double zCmd, double timeStep_s)
@@ -202,9 +221,9 @@ Eigen::Vector3d Drone::altControlRefDyn(double zCmd, double timeStep_s)
     double error = zCmd - g_altCtrlRefDynStates[2];
     double timeConst = parameters.altCtrlRefDyn.timeConst;
     double damping = parameters.altCtrlRefDyn.damping;
-    double acc_now = error *  timeConst * timeConst - 2.0 * damping * timeConst * g_altCtrlRefDynStates[1];
+    double accNow = error *  timeConst * timeConst - 2.0 * damping * timeConst * g_altCtrlRefDynStates[1];
     // TODO: add acc limits
-    g_altCtrlRefDynStates[0] = acc_now;
+    g_altCtrlRefDynStates[0] = accNow;
     // integrate to velocity now
     g_altCtrlRefDynStates[1] = g_altCtrlRefDynStates[1] + g_altCtrlRefDynStates[0] * timeStep_s;
     //TODO: add vel limits
