@@ -191,44 +191,57 @@ Eigen::Vector3d Drone::getBodyRates() const {
     return angularVelocity;
 }
 
+/*
+posCtrlRefStates Drone::getPosCtrlRefStates() const {
+    return g_posCtrlRefDynStates;
+}
+
+altCtrlRefStates Drone::getAltCtrlRefStates() const {
+    return g_altCtrlRefDynStates;
+}
+*/
+
 //  TODO: 2nd order reference position dynamics
 //  TODO: 2nd order reference attitude dynamics
 
-posCtrlStates Drone::posControlRefDyn(Eigen::Vector2d posCmd, double timeStep_s)
+posCtrlRefStates Drone::posControlRefDyn(horizontalStates posCmd, double timeStep_s)
 {
-    Eigen::Vector2d posError = posCmd - g_posCtrlRefDynStates.posRef;
     double timeConst = parameters.posCtrlRefDyn.timeConst;
     double damping   = parameters.posCtrlRefDyn.damping;
-    Eigen::Vector2d accNow;
-    accNow << posError[0] * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.posRef[0],
-              posError[1] * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.posRef[1];
+
+    double posErrorX = posCmd.x - g_posCtrlRefDynStates.posRef.x;
+    double posErrorY = posCmd.y - g_posCtrlRefDynStates.posRef.y;
+
+    g_posCtrlRefDynStates.accRef.x = posErrorX * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.posRef.x;
+    g_posCtrlRefDynStates.accRef.y = posErrorY * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.posRef.y;
     // TODO: add acc limits
-    g_posCtrlRefDynStates.accRef = accNow;
     // integrate to velocity now
-    g_posCtrlRefDynStates.velRef = g_posCtrlRefDynStates.velRef + g_posCtrlRefDynStates.accRef * timeStep_s;
+    g_posCtrlRefDynStates.velRef.x = g_posCtrlRefDynStates.velRef.x + g_posCtrlRefDynStates.accRef.x * timeStep_s;
+    g_posCtrlRefDynStates.velRef.y = g_posCtrlRefDynStates.velRef.y + g_posCtrlRefDynStates.accRef.y * timeStep_s;
     // TODO: add vel limits
     // integrate to position now
-    g_posCtrlRefDynStates.posRef = g_posCtrlRefDynStates.posRef + g_posCtrlRefDynStates.velRef * timeStep_s;
+    g_posCtrlRefDynStates.posRef.x = g_posCtrlRefDynStates.posRef.x + g_posCtrlRefDynStates.velRef.x * timeStep_s;
+    g_posCtrlRefDynStates.posRef.y = g_posCtrlRefDynStates.posRef.y + g_posCtrlRefDynStates.velRef.y * timeStep_s;
 
     return g_posCtrlRefDynStates;
 }
 
 // Altitude Ref Dynamics
 
-Eigen::Vector3d Drone::altControlRefDyn(double zCmd, double timeStep_s)
+altCtrlRefStates Drone::altControlRefDyn(double zCmd, double timeStep_s)
 {
     // Compute the control input (acceleration)
-    double error = zCmd - g_altCtrlRefDynStates[2];
+    double error = zCmd - g_altCtrlRefDynStates.posRef;
     double timeConst = parameters.altCtrlRefDyn.timeConst;
     double damping = parameters.altCtrlRefDyn.damping;
-    double accNow = error *  timeConst * timeConst - 2.0 * damping * timeConst * g_altCtrlRefDynStates[1];
+    double accNow = error *  timeConst * timeConst - 2.0 * damping * timeConst * g_altCtrlRefDynStates.velRef;
     // TODO: add acc limits
-    g_altCtrlRefDynStates[0] = accNow;
+    g_altCtrlRefDynStates.accRef = accNow;
     // integrate to velocity now
-    g_altCtrlRefDynStates[1] = g_altCtrlRefDynStates[1] + g_altCtrlRefDynStates[0] * timeStep_s;
+    g_altCtrlRefDynStates.velRef = g_altCtrlRefDynStates.velRef + g_altCtrlRefDynStates.accRef * timeStep_s;
     //TODO: add vel limits
     // integrate to position now
-    g_altCtrlRefDynStates[2] = g_altCtrlRefDynStates[2] + g_altCtrlRefDynStates[1]*timeStep_s;
+    g_altCtrlRefDynStates.posRef = g_altCtrlRefDynStates.posRef + g_altCtrlRefDynStates.velRef*timeStep_s;
 
     return g_altCtrlRefDynStates;
 }

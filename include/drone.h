@@ -17,21 +17,25 @@ public:
     void setExternalForceBody(const Eigen::Vector3d& force); // Set the value of externalForceBody
     void setExternalTorqueBody(const Eigen::Vector3d& torque); // Set the value of externalTorqueBody
     int getID() const;
-    posCtrlStates posControlRefDyn(Eigen::Vector2d posCmd, double timeStep_s);
-    Eigen::Vector3d altControlRefDyn(double zCmd, double timeStep_s);
+    posCtrlRefStates posControlRefDyn(horizontalStates posCmd, double timeStep_s);
+    altCtrlRefStates altControlRefDyn(double zCmd, double timeStep_s);
     double altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s); // helper function for altitude control
     Eigen::Vector3d attTiltPrioControl(Eigen::Quaterniond quatDes, Eigen::Quaterniond quat, Eigen::Vector3d angVelDes_rps, Eigen::Vector3d angVel_rps, Eigen::Vector3d angVelDotEst_rps);
     Eigen::Vector3d getPosition() const;
     Eigen::Vector3d getVelocity() const;
     Eigen::Quaterniond getQuaternion() const;
     Eigen::Vector3d getBodyRates() const;
+    /*
+    posCtrlRefStates getPosCtrlRefStates() const;
+    altCtrlRefStates getAltCtrlRefStates() const;
+    */
     // Add more member functions as needed
 
 private:
     int id;
     double g_altIntegral;
-    posCtrlStates g_posCtrlRefDynStates;
-    Eigen::Vector3d g_altCtrlRefDynStates;
+    posCtrlRefStates g_posCtrlRefDynStates;
+    altCtrlRefStates g_altCtrlRefDynStates;
     DroneParameters parameters;
     Eigen::Vector3d position;
     Eigen::Vector3d velocity;

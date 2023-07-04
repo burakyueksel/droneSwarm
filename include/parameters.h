@@ -39,11 +39,24 @@ struct linSysParameters
     double damping;
 };
 
-struct posCtrlStates
+struct horizontalStates
 {
-    Eigen::Vector2d posRef;
-    Eigen::Vector2d velRef;
-    Eigen::Vector2d accRef;
+    double x;
+    double y;
+};
+
+struct posCtrlRefStates
+{
+    horizontalStates posRef;
+    horizontalStates velRef;
+    horizontalStates accRef;
+};
+
+struct altCtrlRefStates
+{
+    double posRef;
+    double velRef;
+    double accRef;
 };
 
 struct DroneParameters
