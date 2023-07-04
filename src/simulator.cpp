@@ -35,10 +35,20 @@ int main()
             Eigen::Vector3d position = drone.getPosition();
             Eigen::Vector3d velocity = drone.getVelocity();
             Eigen::Quaterniond quaternion = drone.getQuaternion();
-            // altitude control thrust for each drone
+            // x and y pos command for each drone in NED
+            horizontalStates xyCmd_m;
+            xyCmd_m.x = 10.0;
+            xyCmd_m.y = 10.0;
+            // z pos command for each drone in NED
             double zCmd_m = -50;
-            Eigen::Vector3d altRefStates = drone.altControlRefDyn(zCmd_m, Environment::timeStep);
-            double thrustCtrl = drone.altPidControl(altRefStates[2], position.z(), altRefStates[1], velocity.z(), Environment::timeStep);
+            /* POSITION CONTROLLER */
+            posCtrlRefStates posRefStates = drone.posControlRefDyn(xyCmd_m, Environment::timeStep);
+            /* ATTITUDE CONTROLLER */
+            /* ALTITUDE CONTROLLER */
+            // reference dynamics
+            altCtrlRefStates altRefStates = drone.altControlRefDyn(zCmd_m, Environment::timeStep);
+            // error dynamics
+            double thrustCtrl = drone.altPidControl(altRefStates.posRef, position.z(), altRefStates.velRef, velocity.z(), Environment::timeStep);
             // set the external torques and forces
             drone.setExternalTorqueBody(Eigen::Vector3d(0.0, 0.0, 0.0));
             drone.setExternalForceBody(Eigen::Vector3d(0.0, 0.0, thrustCtrl));
@@ -46,6 +56,7 @@ int main()
             drone.updateState(Environment::timeStep);
             // OUTPUT TO THE TERMINAL
             // Print the position of each drone
+            //std::cout << xyCmd_m.x << "     " << xyCmd_m.y << std::endl;
             /*
             std::cout << "Drone " << drone.getID() << " position: "
                       << position.x() << ", "
@@ -64,6 +75,9 @@ int main()
                        << " " << drone.getID()
                        << " " << position.x() << " " << position.y() << " " << position.z()
                        << " " << quaternion.w() << " " << quaternion.x() << " " << quaternion.y() << " " << quaternion.z()
+                       << " " << posRefStates.posRef.x << " " << posRefStates.posRef.y << " " << altRefStates.posRef
+//                       << " " << posRefStates.velRef.x() << " " << posRefStates.velRef.y() << " " << altRefStates.y()
+//                       << " " << posRefStates.accRef.x() << " " << posRefStates.accRef.y() << " " << altRefStates.z()
                        << "\n";
         }
 /*
