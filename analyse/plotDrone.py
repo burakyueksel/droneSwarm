@@ -7,7 +7,7 @@ import pdb # for debugging
 drone_data_all = {}
 with open("drone_data.txt", "r") as file:
     for line in file:
-        t, drone_id, x, y, z, qw, qx, qy, qz, xRef, yRef, zRef = map(float, line.strip().split())
+        t, drone_id, x, y, z, qw, qx, qy, qz, xRef, yRef, zRef, dxRef, dyRef, dzRef, ddxRef, ddyRef, ddzRef = map(float, line.strip().split())
         if drone_id not in drone_data_all:
             drone_data_all[drone_id] = []
         drone_data_all[drone_id].append([t, x, y, z, qw, qx, qy, qz])
