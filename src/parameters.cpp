@@ -25,6 +25,9 @@ namespace Parameters {
                                       0.0, 0.0, 3.0;
         // init states
         drone1Params.initPos << 0.0, 0.0, 0.0;
+        // pos ctrl ref dyn
+        drone1Params.posCtrlRefDyn.timeConst = 0.6;
+        drone1Params.posCtrlRefDyn.damping   = 1.0; // critically damped
         // alt ctrl ref dyn
         drone1Params.altCtrlRefDyn.timeConst = 0.8;
         drone1Params.altCtrlRefDyn.damping   = 1.0; // critically damped
@@ -65,6 +68,9 @@ namespace Parameters {
                                       0.0, 0.0, 6.0;
         // init states
         drone2Params.initPos << 0.5, 0.0, 0.0;
+        // pos ctrl ref dyn
+        drone2Params.posCtrlRefDyn.timeConst = 0.6;
+        drone2Params.posCtrlRefDyn.damping   = 1.0; // critically damped
         // alt ctrl ref dyn
         drone2Params.altCtrlRefDyn.timeConst = 0.8;
         drone2Params.altCtrlRefDyn.damping   = 0.707; // under damped
@@ -105,6 +111,9 @@ namespace Parameters {
                                       0.0, 0.0, 9.0;
         // init states
         drone3Params.initPos <<1.0, 0.0, 0.0;
+        // pos ctrl ref dyn
+        drone3Params.posCtrlRefDyn.timeConst = 0.8;
+        drone3Params.posCtrlRefDyn.damping   = 1.0; // critically damped
         // alt ctrl ref dyn
         drone3Params.altCtrlRefDyn.timeConst = 1.0;
         drone3Params.altCtrlRefDyn.damping   = 1.0; // critically damped
