@@ -212,8 +212,8 @@ posCtrlRefStates Drone::posControlRefDyn(horizontalStates posCmd, double timeSte
     double posErrorX = posCmd.x - g_posCtrlRefDynStates.posRef.x;
     double posErrorY = posCmd.y - g_posCtrlRefDynStates.posRef.y;
 
-    g_posCtrlRefDynStates.accRef.x = posErrorX * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.posRef.x;
-    g_posCtrlRefDynStates.accRef.y = posErrorY * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.posRef.y;
+    g_posCtrlRefDynStates.accRef.x = posErrorX * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.velRef.x;
+    g_posCtrlRefDynStates.accRef.y = posErrorY * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.velRef.y;
     // TODO: add acc limits
     // integrate to velocity now
     g_posCtrlRefDynStates.velRef.x = g_posCtrlRefDynStates.velRef.x + g_posCtrlRefDynStates.accRef.x * timeStep_s;
