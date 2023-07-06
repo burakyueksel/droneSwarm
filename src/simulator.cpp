@@ -76,8 +76,8 @@ int main()
                        << " " << position.x() << " " << position.y() << " " << position.z()
                        << " " << quaternion.w() << " " << quaternion.x() << " " << quaternion.y() << " " << quaternion.z()
                        << " " << posRefStates.posRef.x << " " << posRefStates.posRef.y << " " << altRefStates.posRef
-//                       << " " << posRefStates.velRef.x() << " " << posRefStates.velRef.y() << " " << altRefStates.y()
-//                       << " " << posRefStates.accRef.x() << " " << posRefStates.accRef.y() << " " << altRefStates.z()
+                       << " " << posRefStates.velRef.x << " " << posRefStates.velRef.y << " " << altRefStates.velRef
+                       << " " << posRefStates.accRef.x << " " << posRefStates.accRef.y << " " << altRefStates.accRef
                        << "\n";
         }
 /*
