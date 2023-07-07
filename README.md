@@ -23,14 +23,15 @@ Let us see which one will prevail, or maybe they merge.
 - Attitude control based on tilt prioritization with proper gain selection and assignment.
 - Logging of drone states in the swarm.
 - Visualisation of drone states in the swarm.
-- Altitude controller reference dynamics (2nd order) added.
 - Cmake test for CI/CD added.
+- Altitude controller reference dynamics (2nd order) is added.
+- Position controller reference dynamics (2nd order) is added.
 
 ## What is in pipleline
 
 - Implement position controller for multirotors.
 - Implement reference dynamics in the inner loops where it is missing.
-- Add actoator models.
+- Add actuator models.
 - Add actuator table per drone, add control effectiveness.
 - Add control allocation.
 - Improve visualization: animations/using UnrealEngine plug-in
