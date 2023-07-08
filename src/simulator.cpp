@@ -35,6 +35,7 @@ int main()
             Eigen::Vector3d position = drone.getPosition();
             Eigen::Vector3d velocity = drone.getVelocity();
             Eigen::Quaterniond quaternion = drone.getQuaternion();
+            Eigen::Vector3d angVel_prs = drone.getBodyRates();
             // x and y pos command for each drone in NED
             horizontalStates xyCmd_m;
             xyCmd_m.x = 10.0;
@@ -43,14 +44,19 @@ int main()
             double zCmd_m = -50;
             /* POSITION CONTROLLER */
             posCtrlRefStates posRefStates = drone.posControlRefDyn(xyCmd_m, Environment::timeStep);
-            /* ATTITUDE CONTROLLER */
+            horizontalStates posAccRefXY  = drone.posCtrlErr(posRefStates, position, velocity, Environment::timeStep);
             /* ALTITUDE CONTROLLER */
             // reference dynamics
             altCtrlRefStates altRefStates = drone.altControlRefDyn(zCmd_m, Environment::timeStep);
             // error dynamics
             double thrustCtrl = drone.altPidControl(altRefStates.posRef, position.z(), altRefStates.velRef, velocity.z(), Environment::timeStep);
+            /* ATTITUDE CONTROLLER */
+            Eigen::Quaterniond quatDes = drone.attTiltPrioRefDyn(posAccRefXY.x, posAccRefXY.y, altRefStates.accRef, 0);
+            Eigen::Vector3d angVelDes_rps (0,0,0);
+            Eigen::Vector3d angVelDotEst_rps (0,0,0);
+            Eigen::Vector3d torqueCtrl = drone.attTiltPrioControl(quatDes, quaternion, angVelDes_rps, angVel_prs, angVelDotEst_rps);
             // set the external torques and forces
-            drone.setExternalTorqueBody(Eigen::Vector3d(0.0, 0.0, 0.0));
+            drone.setExternalTorqueBody(torqueCtrl);
             drone.setExternalForceBody(Eigen::Vector3d(0.0, 0.0, thrustCtrl));
             // update all states
             drone.updateState(Environment::timeStep);

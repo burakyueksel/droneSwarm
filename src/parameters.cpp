@@ -28,6 +28,12 @@ namespace Parameters {
         // pos ctrl ref dyn
         drone1Params.posCtrlRefDyn.timeConst = 0.6; // make sure there is enough margin wrt inner loop
         drone1Params.posCtrlRefDyn.damping   = 1.0; // critically damped
+        // pos ctrl error
+        double posOmega1 = 1.0; // make sure there is enough margin wrt inner loop
+        double posXi1    = 1.0;
+        drone1Params.posCtrlPID.Kp = pow(posOmega1,2);
+        drone1Params.posCtrlPID.Ki = 0.1;
+        drone1Params.posCtrlPID.Kd = 2*posOmega1*posXi1;
         // alt ctrl ref dyn
         drone1Params.altCtrlRefDyn.timeConst = 0.8; // make sure there is enough margin wrt inner loop
         drone1Params.altCtrlRefDyn.damping   = 1.0; // critically damped
@@ -71,6 +77,12 @@ namespace Parameters {
         // pos ctrl ref dyn
         drone2Params.posCtrlRefDyn.timeConst = 0.6; // make sure there is enough margin wrt inner loop
         drone2Params.posCtrlRefDyn.damping   = 1.0; // critically damped
+        // pos ctrl error
+        double posOmega2 = 1.0; // make sure there is enough margin wrt inner loop
+        double posXi2    = 1.0;
+        drone2Params.posCtrlPID.Kp = pow(posOmega2,2);
+        drone2Params.posCtrlPID.Ki = 0.1;
+        drone2Params.posCtrlPID.Kd = 2*posOmega2*posXi2;
         // alt ctrl ref dyn
         drone2Params.altCtrlRefDyn.timeConst = 0.8; // make sure there is enough margin wrt inner loop
         drone2Params.altCtrlRefDyn.damping   = 0.707; // under damped
@@ -114,6 +126,12 @@ namespace Parameters {
         // pos ctrl ref dyn
         drone3Params.posCtrlRefDyn.timeConst = 0.8; // make sure there is enough margin wrt inner loop
         drone3Params.posCtrlRefDyn.damping   = 1.0; // critically damped
+        // pos ctrl error
+        double posOmega3 = 1.0; // make sure there is enough margin wrt inner loop
+        double posXi3    = 1.0;
+        drone3Params.posCtrlPID.Kp = pow(posOmega3,2);
+        drone3Params.posCtrlPID.Ki = 0.1;
+        drone3Params.posCtrlPID.Kd = 2*posOmega3*posXi3;
         // alt ctrl ref dyn
         drone3Params.altCtrlRefDyn.timeConst = 1.0; // make sure there is enough margin wrt inner loop
         drone3Params.altCtrlRefDyn.damping   = 1.0; // critically damped
