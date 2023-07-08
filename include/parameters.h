@@ -19,7 +19,7 @@ struct DroneTypes
     };
 };
 
-struct altCtrlPidParameters
+struct pidParameters
 {
     double Kp;
     double Ki;
@@ -68,7 +68,8 @@ struct DroneParameters
     Eigen::Vector3d initPos;
     linSysParameters posCtrlRefDyn;
     linSysParameters altCtrlRefDyn;
-    altCtrlPidParameters altCtrlPID;
+    pidParameters posCtrlPID;
+    pidParameters altCtrlPID;
     attCtrlTiltPrioParameters attCtrlTiltPrio;
 };
 
