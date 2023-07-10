@@ -1,0 +1,25 @@
+# Doxyfile for droneSwarm project
+
+# Project information
+PROJECT_NAME = "droneSwarm"
+OUTPUT_DIRECTORY = doc
+INPUT = src include
+RECURSIVE = YES
+EXCLUDE = build
+
+# Configuration options
+OPTIMIZE_OUTPUT_FOR_C = YES
+EXTRACT_ALL = YES
+EXTRACT_PRIVATE = YES
+GENERATE_LATEX = NO
+GENERATE_HTML = YES
+HTML_OUTPUT = html
+
+# File and class settings
+FILE_PATTERNS = *.h *.cpp
+EXTENSION_MAPPING = h=C++ cpp=C++
+HIDE_UNDOC_MEMBERS = NO
+HIDE_UNDOC_CLASSES = NO
+
+# Additional configuration options
+ALIASES = "rst=\verbatim embed:rst:leading-asterisk"

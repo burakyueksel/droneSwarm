@@ -141,7 +141,6 @@ Eigen::Quaterniond Drone::eulerToQuaternion(double roll_deg, double pitch_deg, d
     return Eigen::Quaterniond(w, x, y, z);
 }
 
-
 void Drone::updateState(double timeStep) {
     // Update the drone's state based on dynamics
 
