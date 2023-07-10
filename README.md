@@ -6,6 +6,8 @@ Small project for simulating multiple drones together.
 
 Heavily WIP.
 
+Developed and tested using Ubuntu 22.04.
+
 Physics and everything that runs in compile time is written using C++.
 
 Visualization part of the code is written using Python.
@@ -110,3 +112,4 @@ Run them with
 
 
 - runSimulation.sh will clean already existing Makefile, do cmake and make, run the simulator and plot the positions.
+- generateDocs.sh will use the doxygen if installed and create an index.html under docs/html and will open in in your default browser for code documentation.
