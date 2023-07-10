@@ -27,6 +27,7 @@ public:
     Eigen::Vector3d getVelocity() const;
     Eigen::Quaterniond getQuaternion() const;
     Eigen::Vector3d getBodyRates() const;
+    Eigen::Quaterniond eulerToQuaternion(double roll_deg, double pitch_deg, double yaw_deg);
     /*
     posCtrlRefStates getPosCtrlRefStates() const;
     altCtrlRefStates getAltCtrlRefStates() const;
