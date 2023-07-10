@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import pdb # for debugging
+import math
 
 # Read positions from the file
 drone_data_all = {}
@@ -12,12 +13,16 @@ with open("drone_data.txt", "r") as file:
             drone_data_all[drone_id] = []
         drone_data_all[drone_id].append([t, x, y, z, qw, qx, qy, qz])
 
+# Plot every x-th point
+every_xth_data = 100
+
+#################################
+#### PLOT POSITIONS #############
+#################################
+
 # Create a 3D plot
 fig0 = plt.figure(figsize=(8, 6))
 ax0 = fig0.add_subplot(111, projection='3d')
-
-# Plot every x-th point
-every_xth_data = 100
 
 # Plot the drone positions by ID
 for drone_id, drone_data in drone_data_all.items():
@@ -53,7 +58,7 @@ ax0.legend()
 
 
 
-# Pllots on plane
+# Plots on plane
 fig = plt.figure(figsize=(8, 6))
 # XY plot
 ax_xy = fig.add_subplot(131)
@@ -98,6 +103,12 @@ ax_yz.set_ylabel('Z [m]')
 ax_yz.set_title('YZ Plane')
 ax_yz.legend()
 
+
+#################################
+#### PLOT ALTITUDES #############
+#################################
+
+
 # Create a separate figure for plotting z positions over time for each drone
 fig2 = plt.figure(figsize=(8, 6))
 ax2 = fig2.add_subplot(111)
@@ -118,6 +129,51 @@ ax2.set_ylabel("Z Position [m]")
 ax2.set_title("Drone Z Position Over Time")
 ax2.grid(True)
 
+
+#################################
+#### PLOT ANGLES ################
+#################################
+
+# Create a separate figure for plotting roll, pitch and yaw angles
+figAngle = plt.figure(figsize=(8, 6))
+axRoll = figAngle.add_subplot(131)
+axPitch = figAngle.add_subplot(132)
+axYaw = figAngle.add_subplot(133)
+# Iterate over each drone
+for drone_id, drone_data in drone_data_all.items():
+    # Extract time for the current drone
+    time_plot = [data[0] for data in drone_data[::every_xth_data]]
+    # Extract quaternions to angles
+    roll_angles_deg = []
+    pitch_angles_deg = []
+    yaw_angles_deg = []
+    for data in drone_data[::every_xth_data]:
+        qw, qx, qy, qz = data[4:8]
+        roll = np.arctan2(2 * (qw * qx + qy * qz), 1 - 2 * (qx * qx + qy * qy))
+        pitch = np.arcsin(2 * (qw * qy - qx * qz))
+        yaw = np.arctan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz))
+        roll_angles_deg.append(roll*180/math.pi)
+        pitch_angles_deg.append(pitch*180/math.pi)
+        yaw_angles_deg.append(yaw*180/math.pi)
+    # pdb.set_trace() # for debugging
+    # Create a subplot for the current drone
+    axRoll.plot(time_plot, roll_angles_deg, label=f"Drone {int(drone_id)}")
+    axPitch.plot(time_plot, pitch_angles_deg, label=f"Drone {int(drone_id)}")
+    axYaw.plot(time_plot, yaw_angles_deg, label=f"Drone {int(drone_id)}")
+    # add the legends
+    axRoll.legend()
+    axPitch.legend()
+    axYaw.legend()
+# add the lables
+axRoll.set_xlabel("Time")
+axRoll.set_ylabel("Roll angle [Deg]")
+axRoll.grid(True)
+axPitch.set_xlabel("Time")
+axPitch.set_ylabel("Pitch angle [Deg]")
+axPitch.grid(True)
+axYaw.set_xlabel("Time")
+axYaw.set_ylabel("Yaw angle [Deg]")
+axYaw.grid(True)
 
 # Adjust the spacing between subplots
 plt.tight_layout()

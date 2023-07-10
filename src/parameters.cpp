@@ -22,7 +22,7 @@ namespace Parameters {
         drone1Params.mass = 1.0; // Set the mass for drone 1
         drone1Params.inertiaMatrix << 1.0, 0.0, 0.0,
                                       0.0, 2.0, 0.0,
-                                      0.0, 0.0, 3.0;
+                                      0.0, 0.0, 2.0;
         // init states
         drone1Params.initPos << 0.0, 0.0, 0.0;
         // pos ctrl ref dyn
@@ -69,9 +69,9 @@ namespace Parameters {
         drone2Params.droneType = DroneTypes::MC_HEXA;
         // physical properties
         drone2Params.mass = 1.5; // Set the mass for drone 2
-        drone2Params.inertiaMatrix << 4.0, 0.0, 0.0,
-                                      0.0, 5.0, 0.0,
-                                      0.0, 0.0, 6.0;
+        drone2Params.inertiaMatrix << 1.0, 0.0, 0.0,
+                                      0.0, 2.0, 0.0,
+                                      0.0, 0.0, 3.0;
         // init states
         drone2Params.initPos << 0.5, 0.0, 0.0;
         // pos ctrl ref dyn
@@ -117,10 +117,10 @@ namespace Parameters {
         // type
         drone3Params.droneType = DroneTypes::MC_OCTO;
         // physical properties
-        drone3Params.mass = 2.0; // Set the mass for drone 3
-        drone3Params.inertiaMatrix << 7.0, 0.0, 0.0,
-                                      0.0, 8.0, 0.0,
-                                      0.0, 0.0, 9.0;
+        drone3Params.mass = 1.0; // Set the mass for drone 3
+        drone3Params.inertiaMatrix << 1.0, 0.0, 0.0,
+                                      0.0, 2.0, 0.0,
+                                      0.0, 0.0, 4.0;
         // init states
         drone3Params.initPos <<1.0, 0.0, 0.0;
         // pos ctrl ref dyn

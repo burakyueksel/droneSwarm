@@ -116,6 +116,31 @@ Eigen::Quaterniond angleAxisToQuaternion (const double& angle, const Eigen::Vect
     return quat;
 }
 
+Eigen::Quaterniond Drone::eulerToQuaternion(double roll_deg, double pitch_deg, double yaw_deg)
+{
+    // Convert roll, pitch, and yaw angles to radians
+    double rollRad = roll_deg * Environment::PI / 180.0;
+    double pitchRad = pitch_deg * Environment::PI / 180.0;
+    double yawRad = yaw_deg * Environment::PI / 180.0;
+
+    // Calculate half angles
+    double cosRollHalf = cos(rollRad / 2.0);
+    double sinRollHalf = sin(rollRad / 2.0);
+    double cosPitchHalf = cos(pitchRad / 2.0);
+    double sinPitchHalf = sin(pitchRad / 2.0);
+    double cosYawHalf = cos(yawRad / 2.0);
+    double sinYawHalf = sin(yawRad / 2.0);
+
+    // Compute quaternion components
+    double w = cosRollHalf * cosPitchHalf * cosYawHalf + sinRollHalf * sinPitchHalf * sinYawHalf;
+    double x = sinRollHalf * cosPitchHalf * cosYawHalf - cosRollHalf * sinPitchHalf * sinYawHalf;
+    double y = cosRollHalf * sinPitchHalf * cosYawHalf + sinRollHalf * cosPitchHalf * sinYawHalf;
+    double z = cosRollHalf * cosPitchHalf * sinYawHalf - sinRollHalf * sinPitchHalf * cosYawHalf;
+
+    // Return the quaternion
+    return Eigen::Quaterniond(w, x, y, z);
+}
+
 
 void Drone::updateState(double timeStep) {
     // Update the drone's state based on dynamics
@@ -234,18 +259,18 @@ horizontalStates Drone::posCtrlErr(posCtrlRefStates posRefStates, Eigen::Vector3
     double derrorY = posRefStates.velRef.y - velocity[1];
 
     // Proportional term
-    double proportionalX = parameters.altCtrlPID.Kp * errorX;
-    double proportionalY = parameters.altCtrlPID.Kp * errorY;
+    double proportionalX = parameters.posCtrlPID.Kp * errorX;
+    double proportionalY = parameters.posCtrlPID.Kp * errorY;
 
     // Integral term
-    g_horizontalPosIntegral.x += parameters.altCtrlPID.Ki * errorX * timeStep_s;
-    g_horizontalPosIntegral.y += parameters.altCtrlPID.Ki * errorY * timeStep_s;
+    g_horizontalPosIntegral.x += parameters.posCtrlPID.Ki * errorX * timeStep_s;
+    g_horizontalPosIntegral.y += parameters.posCtrlPID.Ki * errorY * timeStep_s;
 
     // todo: add proper anti-windup
 
     // Derivative term
-    double derivativeX = parameters.altCtrlPID.Kd * derrorX;
-    double derivativeY = parameters.altCtrlPID.Kd * derrorY;
+    double derivativeX = parameters.posCtrlPID.Kd * derrorX;
+    double derivativeY = parameters.posCtrlPID.Kd * derrorY;
 
     // Calculate the desired accelerations in x and y axis
     horizontalStates accXYRef;
@@ -264,12 +289,12 @@ Eigen::Quaterniond Drone::attTiltPrioRefDyn(double ddxRef, double ddyRef, double
     // TODO: clearly this is not the case. Another position error ctrl loop needs to be added between the pos reference dynamics and this att tracker
 
     double ddxyNorm = sqrt(ddxRef*ddxRef + ddyRef*ddyRef);
-    double minThreshold = 1e-6;
+    double minThreshold = 1e-4;
     // protect it for very small numbers (we tend to use this value for division)
     ddxyNorm = std::abs(ddxyNorm) < minThreshold ? minThreshold : ddxyNorm;
 
     // eq. 50
-    double angle_red = atan2(ddxyNorm, ddzRef + Environment::GRAVITY);
+    double angle_red = atan2(ddxyNorm, ddzRef - Environment::GRAVITY);
     // eq. 51
     Eigen::Vector3d vector_red (-ddyRef/ddxyNorm, ddxRef/ddxyNorm, 0);
 
@@ -296,9 +321,9 @@ Eigen::Vector3d Drone::attTiltPrioControl(Eigen::Quaterniond quatDes, Eigen::Qua
     // this happens in the following case as an example:
     // quat is the quaternion between a desired frame and the current frame
     // z axis of the desired frame is aligned exactly at the opposite direction of the z axis of the current frame
-    if (qNorm<1e-6)
+    if (qNorm<1e-4)
     {
-        oneOverQuatErrRedNorm = 0.001; // a small number.
+        oneOverQuatErrRedNorm = 1e-4; // a small number.
     }
     else
     {
