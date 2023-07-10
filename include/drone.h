@@ -1,9 +1,11 @@
+/**
+ * @file drone.h
+ * @brief This file contains the declerations of all functions used for a drone.
+ */
 /*
- * File: drone.h
  * Author: Burak Yueksel
  * Date: 2023-06-01
  */
-
 #pragma once
 
 #include <eigen3/Eigen/Dense> // Include Eigen library for vector and matrix operations
@@ -12,10 +14,24 @@
 class Drone
 {
 public:
-    Drone(int id); // Constructor with drone ID
-    void updateState(double timeStep); // Update the drone's state based on dynamics
+    /**
+     * @brief Represents a drone in the drone swarm.
+     */
+    Drone(int id); /**< The ID of the drone. */
+    /**
+     * Updates the state of the drone based on the given time step.
+     * This function computes the new position, orientation, and velocity of the drone.
+     *
+     * @param timeStep The time step for the state update.
+     */
+    void updateState(double timeStep);
     void setExternalForceBody(const Eigen::Vector3d& force); // Set the value of externalForceBody
     void setExternalTorqueBody(const Eigen::Vector3d& torque); // Set the value of externalTorqueBody
+    /**
+     * Gets the ID of the drone.
+     *
+     * @return The ID of the drone.
+     */
     int getID() const;
     posCtrlRefStates posControlRefDyn(horizontalStates posCmd, double timeStep_s);
     altCtrlRefStates altControlRefDyn(double zCmd, double timeStep_s);
@@ -41,6 +57,7 @@ private:
     posCtrlRefStates g_posCtrlRefDynStates;
     altCtrlRefStates g_altCtrlRefDynStates;
     DroneParameters parameters;
+    /// The position of the drone.
     Eigen::Vector3d position;
     Eigen::Vector3d velocity;
     Eigen::Vector3d angularVelocity; // Angular velocity as a member variable
