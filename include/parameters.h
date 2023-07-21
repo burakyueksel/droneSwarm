@@ -19,6 +19,12 @@ struct DroneTypes
     };
 };
 
+struct altCtrlErrOutputs
+{
+    double controlThrust_N;
+    double accCmd_mps2;
+};
+
 struct pidParameters
 {
     double Kp;
