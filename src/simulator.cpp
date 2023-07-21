@@ -44,22 +44,22 @@ int main()
             double zCmd_m = -50;
             /* POSITION CONTROLLER */
             posCtrlRefStates posRefStates = drone.posControlRefDyn(xyCmd_m, Environment::timeStep);
-            horizontalStates posAccRefXY  = drone.posCtrlErr(posRefStates, position, velocity, Environment::timeStep);
+            horizontalStates posAccCmdXY  = drone.posCtrlErr(posRefStates, position, velocity, Environment::timeStep);
             /* ALTITUDE CONTROLLER */
             // reference dynamics
             altCtrlRefStates altRefStates = drone.altControlRefDyn(zCmd_m, Environment::timeStep);
             // error dynamics
-            double thrustCtrl = drone.altPidControl(altRefStates.posRef, position.z(), altRefStates.velRef, velocity.z(), Environment::timeStep);
+            altCtrlErrOutputs altCtrlOutputs = drone.altPidControl(altRefStates.posRef, position.z(), altRefStates.velRef, velocity.z(), Environment::timeStep);
             /* ATTITUDE CONTROLLER */
-            //Eigen::Quaterniond quatDes = drone.attTiltPrioRefDyn(posAccRefXY.x, posAccRefXY.y, altRefStates.accRef, 0);
+            Eigen::Quaterniond quatDes = drone.attTiltPrioRefDyn(posAccCmdXY.x, posAccCmdXY.y, -altCtrlOutputs.accCmd_mps2, 0);
             // test direct attitude commands
-            Eigen::Quaterniond quatDes = drone.eulerToQuaternion(30, 30, 30);
+            //Eigen::Quaterniond quatDes = drone.eulerToQuaternion(30, 30, 30);
             Eigen::Vector3d angVelDes_rps (0,0,0);
             Eigen::Vector3d angVelDotEst_rps (0,0,0);
             Eigen::Vector3d torqueCtrl = drone.attTiltPrioControl(quatDes, quaternion, angVelDes_rps, angVel_prs, angVelDotEst_rps);
             // set the external torques and forces
             drone.setExternalTorqueBody(torqueCtrl);
-            drone.setExternalForceBody(Eigen::Vector3d(0.0, 0.0, thrustCtrl));
+            drone.setExternalForceBody(Eigen::Vector3d(0.0, 0.0, altCtrlOutputs.controlThrust_N));
             // update all states
             drone.updateState(Environment::timeStep);
             // OUTPUT TO THE TERMINAL

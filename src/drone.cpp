@@ -280,22 +280,22 @@ horizontalStates Drone::posCtrlErr(posCtrlRefStates posRefStates, Eigen::Vector3
 }
 
 // Attitude control reference dynamics loop, gives desired attitude in quaternion from position errors.
-Eigen::Quaterniond Drone::attTiltPrioRefDyn(double ddxRef, double ddyRef, double ddzRef, double des_yaw_rad)
+Eigen::Quaterniond Drone::attTiltPrioRefDyn(double ddxCmd, double ddyCmd, double ddzCmd, double des_yaw_rad)
 {
     //source:https://www.flyingmachinearena.ethz.ch/wp-content/publications/2018/breTCST18.pdf
 
-    // Assumption: desired positions are tracked perfectly.
-    // TODO: clearly this is not the case. Another position error ctrl loop needs to be added between the pos reference dynamics and this att tracker
+    // Acc ref could have come in as acc cmd, if the desired positions are tracked perfectly.
+    // Clearly this is not the case. Another position error ctrl loop needs to be added between the pos reference dynamics and this att tracker
 
-    double ddxyNorm = sqrt(ddxRef*ddxRef + ddyRef*ddyRef);
+    double ddxyNorm = sqrt(ddxCmd*ddxCmd + ddyCmd*ddyCmd);
     double minThreshold = 1e-4;
     // protect it for very small numbers (we tend to use this value for division)
     ddxyNorm = std::abs(ddxyNorm) < minThreshold ? minThreshold : ddxyNorm;
 
     // eq. 50
-    double angle_red = atan2(ddxyNorm, ddzRef - Environment::GRAVITY);
+    double angle_red = atan2(ddxyNorm, ddzCmd - Environment::GRAVITY);
     // eq. 51
-    Eigen::Vector3d vector_red (-ddyRef/ddxyNorm, ddxRef/ddxyNorm, 0);
+    Eigen::Vector3d vector_red (-ddyCmd/ddxyNorm, ddxCmd/ddxyNorm, 0);
 
     Eigen::Quaterniond quat_red = angleAxisToQuaternion(angle_red, vector_red);
     Eigen::Quaterniond quat_des_yaw (cos(des_yaw_rad/2), 0, 0, sin(des_yaw_rad/2));
@@ -372,8 +372,9 @@ altCtrlRefStates Drone::altControlRefDyn(double zCmd, double timeStep_s)
 
 
 //  Altitude PID control
-double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s)
+altCtrlErrOutputs Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double dz_mps, double timeStep_s)
 {
+    altCtrlErrOutputs outputs;
     // error
     double error = zDes_m - z_m;
 
@@ -394,10 +395,11 @@ double Drone::altPidControl(double zDes_m, double z_m, double dzDes_mps, double 
     // Calculate the thrust for height control
     // Following lines will implement the correct thrust computation (assumption: thrust aligned with the body z axis)
     double R33 = quat2R33(orientation);
-    double controlThrust_N =   parameters.mass * (Environment::GRAVITY + proportional + g_altIntegral + derivative) / R33;
+    outputs.accCmd_mps2     =   (Environment::GRAVITY + proportional + g_altIntegral + derivative) / R33;
+    outputs.controlThrust_N =   parameters.mass * outputs.accCmd_mps2;
 
     // Following lines implements generic PID, which will perform very well if you stick to the parametrization I gave in parameter.cpp.
     //double controlThrust_N =   proportional + g_altIntegral + derivative;
 
-    return controlThrust_N;
+    return outputs;
 }
