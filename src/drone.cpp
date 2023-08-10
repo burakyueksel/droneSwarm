@@ -97,7 +97,6 @@ double quat2R33(const Eigen::Quaterniond& q)
     return R33;
 }
 
-
 /*
 Implements eq 1 of https://www.flyingmachinearena.ethz.ch/wp-content/publications/2018/breTCST18.pdf
 */
@@ -403,3 +402,62 @@ altCtrlErrOutputs Drone::altPidControl(double zDes_m, double z_m, double dzDes_m
 
     return outputs;
 }
+
+// Trajectory Generators
+/* source to the drawing: https://asciiflow.com/#/share/eJztl0lugzAUhq9ieUWqpIUq6oDURbLtBVhYqlBwF4QSBDQiinKLqoepepqepExtjMHGzEHi6UUyxvb%2FvecB5wht%2FQ1D1X63rDm09AN2oQqPCAYIqo%2FL%2BzmCh7B0e%2FcQlnwc%2BOEDgoCyn4%2FvxLNPCNkFLclyuy2cnYU98NSxSrUWjLyQTvciWo7RWRHlKytYvf5VsBhzlRuNLLSLylpFNCaQgRL%2BZJDDA2ElT18EzeOjOTvvxcWv9JCrcNslaAncWWmdvilHu1D%2F%2FMrOTfWu5MwlCepk5hi9hBeVzFpUyrBoY9iWtayPzLHTQuWS06xbSOAwROJ36XHTLto5dJE9HHXyXd28Fglmzwlmj60OginNs5aewHpWJIhZ0tuSvtkMgfZXNDlZM7G7jdgGQmOJkJWiaPyl1gauwI6nUJgjGhpLpDFoLSvOZ1Ws8g3P%2B4bXBa8nqdx47V6MslcZdkKN6MiQVmAB1lfPMylYxGfFTChUThV%2Fy4ih1baGaP%2FOx4v%2BfhqatBTIlQieyGmRMGn9pCxnWr9TVtxq0r9U%2FfF6o8i7t0l70u5fe%2FKOHMETPP0C2fu2UA%3D%3D) */
+/*
+                ┌──     ──┐
+                │         │       p1 = -1
+                │    p1   │       p2 = -2
+                │    p2   │       p3 = -3
+       poles =  │    p3   │       p4 = -4
+                │    p4   │                    K = real(place(A,B,poles)
+                │         │
+                │         │
+                └──     ──┘
+
+
+
+
+                  ┌─────────────────────────────────────────────────────────────┐
+                  │                                                             │                                                   ┌──┐
+                  │        ┌──     ──┐           ┌─   ─┐                        │                                                   │  │
+                  │        │ 0 1 0 0 │           │  0  │                        │                                 s                 │  │
+  pos_ref         │    A = │ 0 0 1 0 │       B = │  0  │                        ├──────────────────────────────────────────────────►│  │
+   ──────────────►│        │ 0 0 0 1 │           │  0  │                        │                                                   │  │
+                  │        │ 0 0 0 0 │           │  1  │                        │                                                   │  │
+                  │        └──     ──┘           └─   ─┘                        │                                                   │  │
+                  │                                                             │                                                   │  │
+                  │        ┌─  ─┐                  ┌──      ─┐                  │                                                   │  │
+                  │        │ p  │                  │ pos_ref │                  │                                                   ├──┤ ───────────►    traj.
+                  │        │ v  │                  │    0    │                  │                                                   │  │
+                  │    X = │ a  │         x_ref =  │    0    │                  │                                                   │  │
+                  │        │ j  │                  │    0    │                  │                                                   │  │
+                  │        │    │                  │         │                  │                ┌────────┐                         │  │
+                  │        └─  ─┘                  └─      ──┘                  │    dX          │        │                         │  │
+                  │                                                             │                │        │                         │  │
+ ┌───────────────►│                                                             ├───────────────►│   1/s  ├─────────┬──────────────►│  │
+ │                │    dX = (A - B*K)(x-x_ref)                                  │                │        │         │               │  │
+ │                │                                                             │                │        │         │               └──┘
+ │                │    s = dX(4)                                                │                └────────┘         │
+X│                │                                                             │                                 X │
+ │                │                                                             │                                   │
+ │                │                                                             │                                   │
+ │                │                                                             │                                   │
+ │                │                                                             │                                   │
+ │                └─────────────────────────────────────────────────────────────┘                                   │
+ │                                                                                                                  │
+ │                                                                                                                  │
+ │                                                                                                                  │
+ │                                                                                                                  │
+ │                                                                                                                  │
+ │                                                                                                                  │
+ └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+
+                                                                               4thOrderTraj
+ */
