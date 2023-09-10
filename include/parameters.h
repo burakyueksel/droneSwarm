@@ -65,6 +65,41 @@ struct altCtrlRefStates
     double accRef;
 };
 
+struct trajectory4Gains
+{
+    Eigen::Vector4d gains;
+};
+
+struct trajectory2Gains
+{
+    Eigen::Vector2d gains;
+};
+
+struct trajectory4States
+{
+    double position;
+    double velocity;
+    double acceleration;
+    double jerk;
+    double snap;
+};
+
+struct trajectory2States
+{
+    double position;
+    double velocity;
+    double acceleration;
+};
+
+struct trajectorySE3
+{
+    trajectory4States x;
+    trajectory4States y;
+    trajectory4States z;
+    trajectory2States psi;
+};
+
+
 struct DroneParameters
 {
     DroneTypes::Type droneType;
@@ -77,6 +112,8 @@ struct DroneParameters
     pidParameters posCtrlPID;
     pidParameters altCtrlPID;
     attCtrlTiltPrioParameters attCtrlTiltPrio;
+    trajectory4Gains traj4Gains;
+    trajectory2Gains traj2Gains;
 };
 
 namespace Parameters {
