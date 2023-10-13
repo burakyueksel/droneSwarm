@@ -67,36 +67,36 @@ struct altCtrlRefStates
 
 struct trajectory4Gains
 {
-    Eigen::Vector4d gains;
+    Eigen::RowVector4d gains;
 };
 
 struct trajectory2Gains
 {
-    Eigen::Vector2d gains;
+    Eigen::RowVector2d gains;
 };
 
-struct trajectory4States
+struct flatOutputsSE3
 {
-    double position;
-    double velocity;
-    double acceleration;
-    double jerk;
-    double snap;
-};
-
-struct trajectory2States
-{
-    double position;
-    double velocity;
-    double acceleration;
+    double x;
+    double y;
+    double z;
+    double psi;
 };
 
 struct trajectorySE3
 {
-    trajectory4States x;
-    trajectory4States y;
-    trajectory4States z;
-    trajectory2States psi;
+    Eigen::Matrix<double, 5, 1> x; // 5x1: pos, vel, acc, jerk, snap
+    Eigen::Matrix<double, 5, 1> y; // 5x1: pos, vel, acc, jerk, snap
+    Eigen::Matrix<double, 5, 1> z; // 5x1: pos, vel, acc, jerk, snap
+    Eigen::Matrix<double, 3, 1> psi; // 3x1: pos, vel, acc
+};
+
+struct dTrajectorySE3
+{
+    Eigen::Matrix<double, 4, 1> x; // 4x1: vel, acc, jerk, snap
+    Eigen::Matrix<double, 4, 1> y; // 4x1: vel, acc, jerk, snap
+    Eigen::Matrix<double, 4, 1> z; // 4x1: vel, acc, jerk, snap
+    Eigen::Matrix<double, 2, 1> psi; // 2x1: vel, acc
 };
 
 

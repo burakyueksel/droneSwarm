@@ -33,6 +33,7 @@ public:
      * @return The ID of the drone.
      */
     int getID() const;
+    trajectorySE3 trajectoryGenSE3(flatOutputsSE3 flatCmd, double timeStep_s);
     posCtrlRefStates posControlRefDyn(horizontalStates posCmd, double timeStep_s);
     altCtrlRefStates altControlRefDyn(double zCmd, double timeStep_s);
     horizontalStates posCtrlErr(posCtrlRefStates posRefStates, Eigen::Vector3d position, Eigen::Vector3d velocity, double timeStep_s);
@@ -53,6 +54,7 @@ public:
 private:
     int id;
     double g_altIntegral;
+    trajectorySE3 g_trajectorySE3;
     horizontalStates g_horizontalPosIntegral;
     posCtrlRefStates g_posCtrlRefDynStates;
     altCtrlRefStates g_altCtrlRefDynStates;

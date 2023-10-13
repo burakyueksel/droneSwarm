@@ -223,6 +223,7 @@ altCtrlRefStates Drone::getAltCtrlRefStates() const {
     return g_altCtrlRefDynStates;
 }
 */
+
 posCtrlRefStates Drone::posControlRefDyn(horizontalStates posCmd, double timeStep_s)
 {
     double timeConst = parameters.posCtrlRefDyn.timeConst;
@@ -461,3 +462,10 @@ X│                │                                                         
 
                                                                                4thOrderTraj
  */
+
+/*
+trajectorySE3 Drone::trajectoryGenSE3(flatOutputsSE3 flatCmd, double timeStep_s)
+{
+    g_trajectorySE3
+}
+*/
