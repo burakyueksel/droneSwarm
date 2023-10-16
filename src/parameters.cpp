@@ -86,6 +86,7 @@ namespace Parameters {
                         [1]])
         */
         drone1Params.traj2Gains.gains << 2.0, 3.0;
+        // put them all in droneParams
         droneParams.push_back(drone1Params);
 
         /*
@@ -134,6 +135,35 @@ namespace Parameters {
         drone2Params.attCtrlTiltPrio.KD << 2*drone2Params.inertiaMatrix.coeff(0,0)*damping2_X/timeConst2_X, 0.0, 0.0,
                                            0.0, 2*drone2Params.inertiaMatrix.coeff(1,1)*damping2_Y/timeConst2_Y, 0.0,
                                            0.0, 0.0, 2*drone2Params.inertiaMatrix.coeff(2,2)*damping2_Z/timeConst2_Z;
+
+        // trajectory generation
+        // Compute the state feedback gains for 4 times differentiable (up to snap) trajectories
+        // For the computation of the gains, see this file: /droneSwarm/analyse/computeGainsOf4thOrderSmoother
+        /* Following gains are computed for the following poles [-1.0, -2, -3.0, -4.0]
+           with system matrix and input matrices are as in the following:
+           A = np.array([[0, 1, 0, 0],
+              [0, 0, 1, 0],
+              [0, 0, 0, 1],
+              [0, 0, 0, 0]])
+
+            B = np.array([[0],
+                        [0],
+                        [0],
+                        [1]])
+        */
+        drone2Params.traj4Gains.gains << 24.0, 50.0, 35.0, 10.0;
+
+        // Compute the state feedback gains for 2 times differentiable (up to acceleration) trajectories
+        // For the computation of the gains, see this file: /droneSwarm/analyse/computeGainsOf2ndOrderSmoother
+        /* Following gains are computed for the following poles [-1.0, -2.0]
+           with system matrix and input matrices are as in the following:
+            A = np.array([[0, 1],
+                        [0, 0]])
+
+            B = np.array([[0],
+                        [1]])
+        */
+        drone2Params.traj2Gains.gains << 2.0, 3.0;
         // put them all in droneParams
         droneParams.push_back(drone2Params);
 
@@ -183,6 +213,35 @@ namespace Parameters {
         drone3Params.attCtrlTiltPrio.KD << 2*drone3Params.inertiaMatrix.coeff(0,0)*damping3_X/timeConst3_X, 0.0, 0.0,
                                            0.0, 2*drone3Params.inertiaMatrix.coeff(1,1)*damping3_Y/timeConst3_Y, 0.0,
                                            0.0, 0.0, 2*drone3Params.inertiaMatrix.coeff(2,2)*damping3_Z/timeConst3_Z;
+        // trajectory generation
+
+        // Compute the state feedback gains for 4 times differentiable (up to snap) trajectories
+        // For the computation of the gains, see this file: /droneSwarm/analyse/computeGainsOf4thOrderSmoother
+        /* Following gains are computed for the following poles [-1.0, -2, -3.0, -4.0]
+           with system matrix and input matrices are as in the following:
+           A = np.array([[0, 1, 0, 0],
+              [0, 0, 1, 0],
+              [0, 0, 0, 1],
+              [0, 0, 0, 0]])
+
+            B = np.array([[0],
+                        [0],
+                        [0],
+                        [1]])
+        */
+        drone3Params.traj4Gains.gains << 24.0, 50.0, 35.0, 10.0;
+
+        // Compute the state feedback gains for 2 times differentiable (up to acceleration) trajectories
+        // For the computation of the gains, see this file: /droneSwarm/analyse/computeGainsOf2ndOrderSmoother
+        /* Following gains are computed for the following poles [-1.0, -2.0]
+           with system matrix and input matrices are as in the following:
+            A = np.array([[0, 1],
+                        [0, 0]])
+
+            B = np.array([[0],
+                        [1]])
+        */
+        drone3Params.traj2Gains.gains << 2.0, 3.0;
         droneParams.push_back(drone3Params);
     }
 }
