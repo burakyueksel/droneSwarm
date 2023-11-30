@@ -225,14 +225,15 @@ altCtrlRefStates Drone::getAltCtrlRefStates() const {
 */
 posCtrlRefStates Drone::posControlRefDyn(horizontalStates posCmd, double timeStep_s)
 {
-    double timeConst = parameters.posCtrlRefDyn.timeConst;
-    double damping   = parameters.posCtrlRefDyn.damping;
+    double Kp = parameters.posCtrlRefDyn.Kp;
+    double Kd   = parameters.posCtrlRefDyn.Kd;
 
     double posErrorX = posCmd.x - g_posCtrlRefDynStates.posRef.x;
     double posErrorY = posCmd.y - g_posCtrlRefDynStates.posRef.y;
 
-    g_posCtrlRefDynStates.accRef.x = posErrorX * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.velRef.x;
-    g_posCtrlRefDynStates.accRef.y = posErrorY * timeConst * timeConst - 2.0 * damping * timeConst * g_posCtrlRefDynStates.velRef.y;
+    // reference velocity to step position command is not given, hence 0.
+    g_posCtrlRefDynStates.accRef.x = posErrorX *  Kp - Kd * g_posCtrlRefDynStates.velRef.x;
+    g_posCtrlRefDynStates.accRef.y = posErrorY *  Kp - Kd * g_posCtrlRefDynStates.velRef.y;
     // TODO: add acc limits
     // integrate to velocity now
     g_posCtrlRefDynStates.velRef.x = g_posCtrlRefDynStates.velRef.x + g_posCtrlRefDynStates.accRef.x * timeStep_s;
@@ -354,10 +355,11 @@ Eigen::Vector3d Drone::attTiltPrioControl(Eigen::Quaterniond quatDes, Eigen::Qua
 altCtrlRefStates Drone::altControlRefDyn(double zCmd, double timeStep_s)
 {
     // Compute the control input (acceleration)
-    double error = zCmd - g_altCtrlRefDynStates.posRef;
-    double timeConst = parameters.altCtrlRefDyn.timeConst;
-    double damping = parameters.altCtrlRefDyn.damping;
-    double accNow = error *  timeConst * timeConst - 2.0 * damping * timeConst * g_altCtrlRefDynStates.velRef;
+    double error  = zCmd - g_altCtrlRefDynStates.posRef;
+    double Kp     = parameters.altCtrlRefDyn.Kp;
+    double Kd     = parameters.altCtrlRefDyn.Kd;
+    // reference velocity to step altitude command is not given, hence 0.
+    double accNow = error *  Kp - Kd * g_altCtrlRefDynStates.velRef;
     // TODO: add acc limits
     g_altCtrlRefDynStates.accRef = accNow;
     // integrate to velocity now
