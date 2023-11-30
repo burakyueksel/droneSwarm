@@ -39,10 +39,10 @@ struct attCtrlTiltPrioParameters
 
 };
 
-struct linSysParameters
+struct pdParameters
 {
-    double timeConst;
-    double damping;
+    double Kp;
+    double Kd;
 };
 
 struct horizontalStates
@@ -103,17 +103,18 @@ struct dTrajectorySE3
 struct DroneParameters
 {
     DroneTypes::Type droneType;
-    double mass;
-    Eigen::Matrix3d inertiaMatrix;
-    Eigen::Vector3d cogOffset;
-    Eigen::Vector3d initPos;
-    linSysParameters posCtrlRefDyn;
-    linSysParameters altCtrlRefDyn;
-    pidParameters posCtrlPID;
-    pidParameters altCtrlPID;
-    attCtrlTiltPrioParameters attCtrlTiltPrio;
-    trajectory4Gains traj4Gains;
-    trajectory2Gains traj2Gains;
+    double mass;                    // mass, [kg], 1x1
+    Eigen::Matrix3d inertiaMatrix;  // moment of inertia around center of gravity [kgmm^2], 3x3
+    double actBW_rps;               // actuator bandwidth, [rad/s], 1x1
+    Eigen::Vector3d cogOffset;      // offset of center of gravity w.r.t. center of actuation, in cog frame, [m], 3x1
+    Eigen::Vector3d initPos;        // initial position, [m], 3x1
+    pdParameters posCtrlRefDyn;     // first or second order linear system parameters
+    pdParameters altCtrlRefDyn;     // first or second order linear system parameters
+    pidParameters posCtrlPID;       // pid gains
+    pidParameters altCtrlPID;       // pid gains
+    attCtrlTiltPrioParameters attCtrlTiltPrio; // att ctrl PD gains
+    trajectory4Gains traj4Gains;    // 4th order trajectory generator gains
+    trajectory2Gains traj2Gains;    // 2nd order trajectory generator gains 
 };
 
 namespace Parameters {
